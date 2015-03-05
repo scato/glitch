@@ -1,6 +1,9 @@
 namespace Glitch\Grammar;
 
+use Glitch\Grammar\Tree\ProgramNode;
+
 grammar GlitchFile
 {
+    start Program = .* { return new ProgramNode(); };
 }
 
