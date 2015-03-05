@@ -1,0 +1,6 @@
+namespace Glitch\Grammar;
+
+grammar GlitchFile
+{
+}
+

@@ -1,0 +1,13 @@
+{
+    "name": "scato/glitch",
+    "description": "An esoteric programming language based purely on events",
+    "license": "MIT",
+    "require": {},
+    "require-dev": {
+        "scato/phpeg": "1.*",
+        "phpspec/phpspec": "~2.1"
+    },
+    "autoload": {
+        "psr-4": { "Glitch\\": "src/Glitch/" }
+    }
+}
