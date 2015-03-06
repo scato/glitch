@@ -5,7 +5,8 @@
     "require": {},
     "require-dev": {
         "scato/phpeg": "1.*",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "behat/behat": "~3.0"
     },
     "autoload": {
         "psr-4": { "Glitch\\": "src/Glitch/" }
