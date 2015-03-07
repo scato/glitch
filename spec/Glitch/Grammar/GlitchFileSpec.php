@@ -3,7 +3,7 @@
 namespace spec\Glitch\Grammar;
 
 use Glitch\Grammar\Tree\AddListenerNode;
-use Glitch\Grammar\Tree\EventNode;
+use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -42,7 +42,7 @@ class GlitchFileSpec extends ObjectBehavior
     function it_should_parse_an_event_literal()
     {
         $this->parse('main ! args => { print ! args; };')->shouldBeLike(
-            $this->a_program_with(new EventNode(['args'], [
+            $this->a_program_with(new ActionNode(['args'], [
                 new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
             ]))
         );
@@ -52,7 +52,7 @@ class GlitchFileSpec extends ObjectBehavior
     {
         $this->parse('main += args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
-                new AddListenerNode(new ReferenceNode('main'), new EventNode(['args'], [
+                new AddListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
                     new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
                 ]))
             ])

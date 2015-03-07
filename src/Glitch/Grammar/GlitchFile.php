@@ -3,7 +3,7 @@
 namespace Glitch\Grammar;
 
 use Glitch\Grammar\Tree\AddListenerNode;
-use Glitch\Grammar\Tree\EventNode;
+use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -327,7 +327,7 @@ class GlitchFile
         $_cut7 = $this->cut;
 
         $this->cut = false;
-        $_success = $this->parseEventLiteral();
+        $_success = $this->parseActionLiteral();
 
         if (!$_success && !$this->cut) {
             $this->position = $_position6;
@@ -540,14 +540,14 @@ class GlitchFile
         return $_success;
     }
 
-    protected function parseEventLiteral()
+    protected function parseActionLiteral()
     {
         $_position = $this->position;
 
-        if (isset($this->cache['EventLiteral'][$_position])) {
-            $_success = $this->cache['EventLiteral'][$_position]['success'];
-            $this->position = $this->cache['EventLiteral'][$_position]['position'];
-            $this->value = $this->cache['EventLiteral'][$_position]['value'];
+        if (isset($this->cache['ActionLiteral'][$_position])) {
+            $_success = $this->cache['ActionLiteral'][$_position]['success'];
+            $this->position = $this->cache['ActionLiteral'][$_position]['position'];
+            $this->value = $this->cache['ActionLiteral'][$_position]['value'];
 
             return $_success;
         }
@@ -638,18 +638,18 @@ class GlitchFile
 
         if ($_success) {
             $this->value = call_user_func(function () use (&$parameters, &$statements) {
-                return new EventNode($parameters, $statements);
+                return new ActionNode($parameters, $statements);
             });
         }
 
-        $this->cache['EventLiteral'][$_position] = array(
+        $this->cache['ActionLiteral'][$_position] = array(
             'success' => $_success,
             'position' => $this->position,
             'value' => $this->value
         );
 
         if (!$_success) {
-            $this->report($_position, 'EventLiteral');
+            $this->report($_position, 'ActionLiteral');
         }
 
         return $_success;

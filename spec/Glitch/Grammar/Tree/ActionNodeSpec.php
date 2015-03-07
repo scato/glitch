@@ -6,7 +6,7 @@ use Glitch\Grammar\Tree\FireNode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class EventNodeSpec extends ObjectBehavior
+class ActionNodeSpec extends ObjectBehavior
 {
     function let(FireNode $statement)
     {
