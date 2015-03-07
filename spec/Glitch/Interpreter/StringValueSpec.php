@@ -7,8 +7,13 @@ use Prophecy\Argument;
 
 class StringValueSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    function let()
     {
-        $this->shouldHaveType('Glitch\Interpreter\StringValue');
+        $this->beConstructedWith('Hello, world!');
+    }
+
+    function it_can_be_converted_to_a_string()
+    {
+        $this->toString()->shouldBe('Hello, world!');
     }
 }
