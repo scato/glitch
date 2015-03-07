@@ -2,6 +2,7 @@
 
 namespace Glitch\Grammar;
 
+use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\EventNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
@@ -81,7 +82,19 @@ class GlitchFile
             return $_success;
         }
 
+        $_position2 = $this->position;
+        $_cut3 = $this->cut;
+
+        $this->cut = false;
         $_success = $this->parseFireStatement();
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position2;
+
+            $_success = $this->parseAddListenerStatement();
+        }
+
+        $this->cut = $_cut3;
 
         $this->cache['Statement'][$_position] = array(
             'success' => $_success,
@@ -108,7 +121,7 @@ class GlitchFile
             return $_success;
         }
 
-        $_value2 = array();
+        $_value4 = array();
 
         $_success = $this->parseExpression();
 
@@ -117,13 +130,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("!")) === "!") {
                 $_success = true;
@@ -137,13 +150,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             $_success = $this->parseExpression();
 
@@ -153,13 +166,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
             if (substr($this->string, $this->position, strlen(";")) === ";") {
                 $_success = true;
@@ -173,9 +186,9 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value2[] = $this->value;
+            $_value4[] = $this->value;
 
-            $this->value = $_value2;
+            $this->value = $_value4;
         }
 
         if ($_success) {
@@ -197,6 +210,107 @@ class GlitchFile
         return $_success;
     }
 
+    protected function parseAddListenerStatement()
+    {
+        $_position = $this->position;
+
+        if (isset($this->cache['AddListenerStatement'][$_position])) {
+            $_success = $this->cache['AddListenerStatement'][$_position]['success'];
+            $this->position = $this->cache['AddListenerStatement'][$_position]['position'];
+            $this->value = $this->cache['AddListenerStatement'][$_position]['value'];
+
+            return $_success;
+        }
+
+        $_value5 = array();
+
+        $_success = $this->parseExpression();
+
+        if ($_success) {
+            $left = $this->value;
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            if (substr($this->string, $this->position, strlen("+=")) === "+=") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("+="));
+                $this->position += strlen("+=");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"+="');
+            }
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            $_success = $this->parseExpression();
+
+            if ($_success) {
+                $right = $this->value;
+            }
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            if (substr($this->string, $this->position, strlen(";")) === ";") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen(";"));
+                $this->position += strlen(";");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '";"');
+            }
+        }
+
+        if ($_success) {
+            $_value5[] = $this->value;
+
+            $this->value = $_value5;
+        }
+
+        if ($_success) {
+            $this->value = call_user_func(function () use (&$left, &$right) {
+                return new AddListenerNode($left, $right);
+            });
+        }
+
+        $this->cache['AddListenerStatement'][$_position] = array(
+            'success' => $_success,
+            'position' => $this->position,
+            'value' => $this->value
+        );
+
+        if (!$_success) {
+            $this->report($_position, 'AddListenerStatement');
+        }
+
+        return $_success;
+    }
+
     protected function parseExpression()
     {
         $_position = $this->position;
@@ -209,25 +323,25 @@ class GlitchFile
             return $_success;
         }
 
-        $_position3 = $this->position;
-        $_cut4 = $this->cut;
+        $_position6 = $this->position;
+        $_cut7 = $this->cut;
 
         $this->cut = false;
         $_success = $this->parseEventLiteral();
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position3;
+            $this->position = $_position6;
 
             $_success = $this->parseReferenceExpression();
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position3;
+            $this->position = $_position6;
 
             $_success = $this->parseStringLiteral();
         }
 
-        $this->cut = $_cut4;
+        $this->cut = $_cut7;
 
         $this->cache['Expression'][$_position] = array(
             'success' => $_success,
@@ -291,9 +405,9 @@ class GlitchFile
             return $_success;
         }
 
-        $_position12 = $this->position;
+        $_position15 = $this->position;
 
-        $_value11 = array();
+        $_value14 = array();
 
         if (substr($this->string, $this->position, strlen("\"")) === "\"") {
             $_success = true;
@@ -306,17 +420,17 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value11[] = $this->value;
+            $_value14[] = $this->value;
 
-            $_value9 = array();
-            $_cut10 = $this->cut;
+            $_value12 = array();
+            $_cut13 = $this->cut;
 
             while (true) {
-                $_position8 = $this->position;
+                $_position11 = $this->position;
 
                 $this->cut = false;
-                $_position6 = $this->position;
-                $_cut7 = $this->cut;
+                $_position9 = $this->position;
+                $_cut10 = $this->cut;
 
                 $this->cut = false;
                 if (preg_match('/^[^\\\\"]$/', substr($this->string, $this->position, 1))) {
@@ -328,9 +442,9 @@ class GlitchFile
                 }
 
                 if (!$_success && !$this->cut) {
-                    $this->position = $_position6;
+                    $this->position = $_position9;
 
-                    $_value5 = array();
+                    $_value8 = array();
 
                     if (substr($this->string, $this->position, strlen("\\")) === "\\") {
                         $_success = true;
@@ -343,7 +457,7 @@ class GlitchFile
                     }
 
                     if ($_success) {
-                        $_value5[] = $this->value;
+                        $_value8[] = $this->value;
 
                         if ($this->position < strlen($this->string)) {
                             $_success = true;
@@ -355,32 +469,32 @@ class GlitchFile
                     }
 
                     if ($_success) {
-                        $_value5[] = $this->value;
+                        $_value8[] = $this->value;
 
-                        $this->value = $_value5;
+                        $this->value = $_value8;
                     }
                 }
 
-                $this->cut = $_cut7;
+                $this->cut = $_cut10;
 
                 if (!$_success) {
                     break;
                 }
 
-                $_value9[] = $this->value;
+                $_value12[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position8;
-                $this->value = $_value9;
+                $this->position = $_position11;
+                $this->value = $_value12;
             }
 
-            $this->cut = $_cut10;
+            $this->cut = $_cut13;
         }
 
         if ($_success) {
-            $_value11[] = $this->value;
+            $_value14[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("\"")) === "\"") {
                 $_success = true;
@@ -394,13 +508,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value11[] = $this->value;
+            $_value14[] = $this->value;
 
-            $this->value = $_value11;
+            $this->value = $_value14;
         }
 
         if ($_success) {
-            $this->value = strval(substr($this->string, $_position12, $this->position - $_position12));
+            $this->value = strval(substr($this->string, $_position15, $this->position - $_position15));
         }
 
         if ($_success) {
@@ -438,7 +552,7 @@ class GlitchFile
             return $_success;
         }
 
-        $_value13 = array();
+        $_value16 = array();
 
         $_success = $this->parseParameterList();
 
@@ -447,13 +561,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("=>")) === "=>") {
                 $_success = true;
@@ -467,13 +581,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("{")) === "{") {
                 $_success = true;
@@ -487,7 +601,7 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             $_success = $this->parseStatementList();
 
@@ -497,13 +611,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("}")) === "}") {
                 $_success = true;
@@ -517,9 +631,9 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value13[] = $this->value;
+            $_value16[] = $this->value;
 
-            $this->value = $_value13;
+            $this->value = $_value16;
         }
 
         if ($_success) {
@@ -553,11 +667,11 @@ class GlitchFile
             return $_success;
         }
 
-        $_value15 = array();
-        $_cut16 = $this->cut;
+        $_value18 = array();
+        $_cut19 = $this->cut;
 
         while (true) {
-            $_position14 = $this->position;
+            $_position17 = $this->position;
 
             $this->cut = false;
             if (preg_match('/^[\\r\\t\\n ]$/', substr($this->string, $this->position, 1))) {
@@ -572,16 +686,16 @@ class GlitchFile
                 break;
             }
 
-            $_value15[] = $this->value;
+            $_value18[] = $this->value;
         }
 
         if (!$this->cut) {
             $_success = true;
-            $this->position = $_position14;
-            $this->value = $_value15;
+            $this->position = $_position17;
+            $this->value = $_value18;
         }
 
-        $this->cut = $_cut16;
+        $this->cut = $_cut19;
 
         $this->cache['_'][$_position] = array(
             'success' => $_success,
@@ -608,9 +722,9 @@ class GlitchFile
             return $_success;
         }
 
-        $_position21 = $this->position;
+        $_position24 = $this->position;
 
-        $_value20 = array();
+        $_value23 = array();
 
         if (preg_match('/^[A-Za-z_]$/', substr($this->string, $this->position, 1))) {
             $_success = true;
@@ -621,13 +735,13 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value20[] = $this->value;
+            $_value23[] = $this->value;
 
-            $_value18 = array();
-            $_cut19 = $this->cut;
+            $_value21 = array();
+            $_cut22 = $this->cut;
 
             while (true) {
-                $_position17 = $this->position;
+                $_position20 = $this->position;
 
                 $this->cut = false;
                 if (preg_match('/^[A-Za-z0-9_]$/', substr($this->string, $this->position, 1))) {
@@ -642,26 +756,26 @@ class GlitchFile
                     break;
                 }
 
-                $_value18[] = $this->value;
+                $_value21[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position17;
-                $this->value = $_value18;
+                $this->position = $_position20;
+                $this->value = $_value21;
             }
 
-            $this->cut = $_cut19;
+            $this->cut = $_cut22;
         }
 
         if ($_success) {
-            $_value20[] = $this->value;
+            $_value23[] = $this->value;
 
-            $this->value = $_value20;
+            $this->value = $_value23;
         }
 
         if ($_success) {
-            $this->value = strval(substr($this->string, $_position21, $this->position - $_position21));
+            $this->value = strval(substr($this->string, $_position24, $this->position - $_position24));
         }
 
         $this->cache['Identifier'][$_position] = array(
@@ -689,19 +803,19 @@ class GlitchFile
             return $_success;
         }
 
-        $_value24 = array();
-        $_cut25 = $this->cut;
+        $_value27 = array();
+        $_cut28 = $this->cut;
 
         while (true) {
-            $_position23 = $this->position;
+            $_position26 = $this->position;
 
             $this->cut = false;
-            $_value22 = array();
+            $_value25 = array();
 
             $_success = $this->parse_();
 
             if ($_success) {
-                $_value22[] = $this->value;
+                $_value25[] = $this->value;
 
                 $_success = $this->parseStatement();
 
@@ -711,9 +825,9 @@ class GlitchFile
             }
 
             if ($_success) {
-                $_value22[] = $this->value;
+                $_value25[] = $this->value;
 
-                $this->value = $_value22;
+                $this->value = $_value25;
             }
 
             if ($_success) {
@@ -726,16 +840,16 @@ class GlitchFile
                 break;
             }
 
-            $_value24[] = $this->value;
+            $_value27[] = $this->value;
         }
 
         if (!$this->cut) {
             $_success = true;
-            $this->position = $_position23;
-            $this->value = $_value24;
+            $this->position = $_position26;
+            $this->value = $_value27;
         }
 
-        $this->cut = $_cut25;
+        $this->cut = $_cut28;
 
         $this->cache['StatementList'][$_position] = array(
             'success' => $_success,
