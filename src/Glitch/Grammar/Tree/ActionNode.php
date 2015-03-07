@@ -2,7 +2,7 @@
 
 namespace Glitch\Grammar\Tree;
 
-class EventNode
+class ActionNode
 {
     private $parameters;
     private $statements;

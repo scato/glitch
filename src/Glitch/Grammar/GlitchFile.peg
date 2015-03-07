@@ -1,6 +1,7 @@
 namespace Glitch\Grammar;
 
-use Glitch\Grammar\Tree\EventNode;
+use Glitch\Grammar\Tree\AddListenerNode;
+use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -10,15 +11,16 @@ grammar GlitchFile
 {
     start Program = statements:StatementList _ { return new ProgramNode($statements); };
     
-    Statement = FireStatement;
+    Statement = FireStatement / AddListenerStatement;
 
     FireStatement = left:Expression _ "!" _ right:Expression _ ";" { return new FireNode($left, $right); };
+    AddListenerStatement = left:Expression _ "+=" _ right:Expression _ ";" { return new AddListenerNode($left, $right); };
 
-    Expression = EventLiteral / ReferenceExpression / StringLiteral;
+    Expression = ActionLiteral / ReferenceExpression / StringLiteral;
 
     ReferenceExpression = value:Identifier { return new ReferenceNode($value); };
     StringLiteral = value:$("\"" ([^\\"] / "\\" .)* "\"") { return new StringNode($value); };
-    EventLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new EventNode($parameters, $statements); };
+    ActionLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new ActionNode($parameters, $statements); };
 
     _ = [\r\t\n ]*;
     Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
