@@ -2,7 +2,10 @@
 
 namespace Glitch\Grammar\Tree;
 
-class ActionNode
+use Glitch\Interpreter\ActionValue;
+use Glitch\Interpreter\ActivationObject;
+
+class ActionNode implements ExpressionNode
 {
     private $parameters;
     private $statements;
@@ -21,5 +24,10 @@ class ActionNode
     public function getStatements()
     {
         return $this->statements;
+    }
+
+    public function reduce(ActivationObject $scope)
+    {
+        return new ActionValue($this->parameters, $this->statements, $this->scope);
     }
 }
