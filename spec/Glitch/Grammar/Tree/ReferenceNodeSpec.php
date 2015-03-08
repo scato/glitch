@@ -26,7 +26,7 @@ class ReferenceNodeSpec extends ObjectBehavior
 
     function it_reduces_to_the_value_that_was_assigned_to_it(ActivationObject $scope, StringValue $value)
     {
-        $scope->get('main')->shouldBeCalled()->willReturn($value);
+        $scope->get('main')->willReturn($value);
 
         $this->reduce($scope)->shouldBe($value);
     }
