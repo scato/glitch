@@ -53,6 +53,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $global->set('println', $this->println->reveal());
 
         $program->run($global);
+        $global->get('main')->fire(new StringValue(''));
     }
 
     /**
