@@ -5,12 +5,18 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Glitch\Interpreter\StringValue;
+use Prophecy\Prophet;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context, SnippetAcceptingContext
 {
+    private $prophet;
+    private $println;
+    private $example;
+
     /**
      * Initializes context.
      *
@@ -20,9 +26,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function __construct()
     {
-    }
+        $this->prophet = new Prophet();
 
-    private $example;
+        $this->println = $this->prophet->prophesize();
+        $this->println->willExtend('Glitch\Interpreter\EventValue');
+    }
 
     /**
      * @Given I have a Hello, world! example
@@ -33,11 +41,18 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I run the interpreter
+     * @When I run it
      */
-    public function iRunTheInterpreter()
+    public function iRunIt()
     {
-        throw new PendingException();
+        $grammar = new \Glitch\Grammar\GlitchFile();
+        $program = $grammar->parse($this->example);
+
+        $global = new \Glitch\Interpreter\ActivationObject();
+        $global->set('main', new \Glitch\Interpreter\EventValue());
+        $global->set('println', $this->println->reveal());
+
+        $program->run($global);
     }
 
     /**
@@ -45,6 +60,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeTheExpectedOutput()
     {
-        throw new PendingException();
+        $this->println->fire(new StringValue("Hello, world!"))->shouldHaveBeenCalled();
     }
 }

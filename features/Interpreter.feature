@@ -5,6 +5,6 @@ Feature: Interpreter
 
     Scenario: Hello, world!
         Given I have a Hello, world! example
-        When I run the interpreter
+        When I run it
         Then I should see the expected output
 
