@@ -28,6 +28,6 @@ class ActionNode implements ExpressionNode
 
     public function reduce(ActivationObject $scope)
     {
-        return new ActionValue($this->parameters, $this->statements, $this->scope);
+        return new ActionValue($this->parameters, $this->statements, $scope);
     }
 }
