@@ -2,7 +2,9 @@
 
 namespace Glitch\Grammar\Tree;
 
-class FireNode
+use Glitch\Interpreter\ActivationObject;
+
+class FireNode implements StatementNode
 {
     private $left;
     private $right;
@@ -21,5 +23,13 @@ class FireNode
     public function getRight()
     {
         return $this->right;
+    }
+
+    public function invoke(ActivationObject $scope)
+    {
+        $left = $this->left->reduce($scope);
+        $right = $this->right->reduce($scope);
+
+        $left->fire($right);
     }
 }
