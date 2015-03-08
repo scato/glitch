@@ -13,20 +13,20 @@ class EventValueSpec extends ObjectBehavior
     {
         $value = new StringValue('test');
 
-        $listener->fire($value)->shouldBeCalled();
-
-        $this->add($listener);
+        $this->addListener($listener);
         $this->fire($value);
+
+        $listener->fire($value)->shouldBeCalled();
     }
 
     function it_will_not_fire_listeners_that_were_removed(EventValue $listener)
     {
         $value = new StringValue('test');
 
-        $listener->fire($value)->shouldNotBeCalled();
-
-        $this->add($listener);
-        $this->remove($listener);
+        $this->addListener($listener);
+        $this->removeListener($listener);
         $this->fire($value);
+
+        $listener->fire($value)->shouldNotBeCalled();
     }
 }

@@ -6,12 +6,12 @@ class EventValue
 {
     private $listeners = array();
 
-    public function add(EventValue $listener)
+    public function addListener($listener)
     {
         $this->listeners[] = $listener;
     }
 
-    public function remove(EventValue $listener)
+    public function removeListener($listener)
     {
         $listeners = array();
 
