@@ -21,6 +21,8 @@ class StringNode implements ExpressionNode
 
     public function reduce(ActivationObject $scope)
     {
-        return new StringValue($this->value);
+        eval("\$value = {$this->value};");
+
+        return new StringValue($value);
     }
 }
