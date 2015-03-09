@@ -2,8 +2,9 @@
 
 namespace spec\Glitch\Grammar;
 
-use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\ActionNode;
+use Glitch\Grammar\Tree\AddListenerNode;
+use Glitch\Grammar\Tree\AssignmentNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -24,6 +25,15 @@ class GlitchFileSpec extends ObjectBehavior
     function it_should_parse_an_empty_program()
     {
         $this->parse('')->shouldBeLike(new ProgramNode([]));
+    }
+
+    function it_should_parse_an_assignment_statement()
+    {
+        $this->parse('args := "";')->shouldBeLike(
+            new ProgramNode([
+                new AssignmentNode(new ReferenceNode('args'), new StringNode('""'))
+            ])
+        );
     }
 
     function it_should_parse_a_fire_statement()
