@@ -2,7 +2,9 @@
 
 namespace Glitch\Grammar\Tree;
 
-class AddListenerNode
+use Glitch\Interpreter\ActivationObject;
+
+class AddListenerNode implements StatementNode
 {
     private $left;
     private $right;
@@ -22,4 +24,13 @@ class AddListenerNode
     {
         return $this->right;
     }
+
+    public function invoke(ActivationObject $scope)
+    {
+        $left = $this->left->reduce($scope);
+        $right = $this->right->reduce($scope);
+
+        $left->addListener($right);
+    }
 }
+

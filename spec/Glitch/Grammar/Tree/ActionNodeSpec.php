@@ -3,6 +3,7 @@
 namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\FireNode;
+use Glitch\Interpreter\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -13,6 +14,11 @@ class ActionNodeSpec extends ObjectBehavior
         $this->beConstructedWith(['x'], [$statement]);
     }
 
+    function it_is_an_expression()
+    {
+        $this->shouldHaveType('Glitch\Grammar\Tree\ExpressionNode');
+    }
+
     function it_has_parameters()
     {
         $this->getParameters()->shouldBeLike(['x']);
@@ -21,5 +27,10 @@ class ActionNodeSpec extends ObjectBehavior
     function it_has_statements(FireNode $statement)
     {
         $this->getStatements()->shouldBeLike([$statement]);
+    }
+
+    function it_reduces_to_an_action_value(ActivationObject $scope)
+    {
+        $this->reduce($scope)->shouldHaveType('Glitch\Interpreter\ActionValue');
     }
 }

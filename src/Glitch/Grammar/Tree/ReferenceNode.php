@@ -2,7 +2,9 @@
 
 namespace Glitch\Grammar\Tree;
 
-class ReferenceNode
+use Glitch\Interpreter\ActivationObject;
+
+class ReferenceNode implements ExpressionNode
 {
     private $value;
 
@@ -14,5 +16,10 @@ class ReferenceNode
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function reduce(ActivationObject $scope)
+    {
+        return $scope->get($this->value);
     }
 }

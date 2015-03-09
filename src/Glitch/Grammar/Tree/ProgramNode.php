@@ -2,6 +2,8 @@
 
 namespace Glitch\Grammar\Tree;
 
+use Glitch\Interpreter\ActivationObject;
+
 class ProgramNode
 {
     private $statements;
@@ -14,5 +16,12 @@ class ProgramNode
     public function getStatements()
     {
         return $this->statements;
+    }
+
+    public function run(ActivationObject $scope)
+    {
+        foreach ($this->statements as $statement) {
+            $statement->invoke($scope);
+        }
     }
 }
