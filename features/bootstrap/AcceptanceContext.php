@@ -11,7 +11,7 @@ use Prophecy\Prophet;
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context, SnippetAcceptingContext
+class AcceptanceContext implements Context, SnippetAcceptingContext
 {
     private $prophet;
     private $println;
