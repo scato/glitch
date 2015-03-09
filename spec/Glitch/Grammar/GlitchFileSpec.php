@@ -33,22 +33,6 @@ class GlitchFileSpec extends ObjectBehavior
         );
     }
 
-    function it_should_parse_a_string_literal()
-    {
-        $this->parse('main ! "Hello, world!\\n";')->shouldBeLike(
-            $this->a_program_with(new StringNode('"Hello, world!\\n"'))
-        );
-    }
-
-    function it_should_parse_an_event_literal()
-    {
-        $this->parse('main ! args => { print ! args; };')->shouldBeLike(
-            $this->a_program_with(new ActionNode(['args'], [
-                new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
-            ]))
-        );
-    }
-
     function it_should_parse_an_add_listener_statement()
     {
         $this->parse('main += args => { print ! args; };')->shouldBeLike(
@@ -68,6 +52,22 @@ class GlitchFileSpec extends ObjectBehavior
                     new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
                 ]))
             ])
+        );
+    }
+
+    function it_should_parse_a_string_literal()
+    {
+        $this->parse('main ! "Hello, world!\\n";')->shouldBeLike(
+            $this->a_program_with(new StringNode('"Hello, world!\\n"'))
+        );
+    }
+
+    function it_should_parse_an_action_literal()
+    {
+        $this->parse('main ! args => { print ! args; };')->shouldBeLike(
+            $this->a_program_with(new ActionNode(['args'], [
+                new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
+            ]))
         );
     }
 }
