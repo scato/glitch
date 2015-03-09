@@ -5,16 +5,18 @@ use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
+use Glitch\Grammar\Tree\RemoveListenerNode;
 use Glitch\Grammar\Tree\StringNode;
 
 grammar GlitchFile
 {
     start Program = statements:StatementList _ { return new ProgramNode($statements); };
     
-    Statement = FireStatement / AddListenerStatement;
+    Statement = FireStatement / AddListenerStatement / RemoveListenerStatement;
 
     FireStatement = left:Expression _ "!" _ right:Expression _ ";" { return new FireNode($left, $right); };
     AddListenerStatement = left:Expression _ "+=" _ right:Expression _ ";" { return new AddListenerNode($left, $right); };
+    RemoveListenerStatement = left:Expression _ "-=" _ right:Expression _ ";" { return new RemoveListenerNode($left, $right); };
 
     Expression = ActionLiteral / ReferenceExpression / StringLiteral;
 

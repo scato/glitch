@@ -7,6 +7,7 @@ use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
+use Glitch\Grammar\Tree\RemoveListenerNode;
 use Glitch\Grammar\Tree\StringNode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -53,6 +54,17 @@ class GlitchFileSpec extends ObjectBehavior
         $this->parse('main += args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
                 new AddListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
+                    new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
+                ]))
+            ])
+        );
+    }
+
+    function it_should_parse_a_remove_listener_statement()
+    {
+        $this->parse('main -= args => { print ! args; };')->shouldBeLike(
+            new ProgramNode([
+                new RemoveListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
                     new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
                 ]))
             ])
