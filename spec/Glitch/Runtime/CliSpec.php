@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Glitch\Interpreter;
+namespace spec\Glitch\Runtime;
 
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

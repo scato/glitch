@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Glitch\Interpreter;
+namespace spec\Glitch\Runtime;
 
 use Glitch\Grammar\Tree\StatementNode;
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -17,7 +17,7 @@ class ActionValueSpec extends ObjectBehavior
     
     function it_is_an_event()
     {
-        $this->shouldHaveType('Glitch\Interpreter\EventValue');
+        $this->shouldHaveType('Glitch\Runtime\EventValue');
     }
 
     function it_should_invoke_its_statements_when_fired(StatementNode $statement, ActivationObject $parentScope, StringValue $value)

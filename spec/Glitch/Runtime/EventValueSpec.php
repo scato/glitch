@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Glitch\Interpreter;
+namespace spec\Glitch\Runtime;
 
-use Glitch\Interpreter\EventValue;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\EventValue;
+use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

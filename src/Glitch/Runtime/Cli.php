@@ -1,6 +1,6 @@
 <?php
 
-namespace Glitch\Interpreter;
+namespace Glitch\Runtime;
 
 class Cli
 {

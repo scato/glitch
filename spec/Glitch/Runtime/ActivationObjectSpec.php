@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Glitch\Interpreter;
+namespace spec\Glitch\Runtime;
 
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\AssignmentException;
-use Glitch\Interpreter\ReferenceException;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\AssignmentException;
+use Glitch\Runtime\ReferenceException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
