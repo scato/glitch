@@ -5,7 +5,9 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Glitch\Runtime\StringValue;
+use Glitch\Grammar\GlitchFile;
+use Glitch\Console\Interpreter;
+use Glitch\Console\CliFactory;
 use Prophecy\Prophet;
 
 /**
@@ -14,8 +16,9 @@ use Prophecy\Prophet;
 class AcceptanceContext implements Context, SnippetAcceptingContext
 {
     private $prophet;
-    private $println;
-    private $example;
+    private $interpreter;
+    private $output;
+    private $filesystem;
 
     /**
      * Initializes context.
@@ -28,8 +31,17 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
     {
         $this->prophet = new Prophet();
 
-        $this->println = $this->prophet->prophesize();
-        $this->println->willExtend('Glitch\Runtime\EventValue');
+        $this->output = $this->prophet->prophesize();
+        $this->output->willImplement('Symfony\Component\Console\Output\OutputInterface');
+
+        $this->filesystem = $this->prophet->prophesize();
+        $this->filesystem->willImplement('League\Flysystem\FilesystemInterface');
+
+        $this->interpreter = new Interpreter(
+            $this->filesystem->reveal(),
+            new GlitchFile(),
+            new CliFactory()
+        );
     }
 
     /**
@@ -37,7 +49,7 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
      */
     public function iHaveAHelloWorldExample()
     {
-        $this->example = 'main += args => { println ! "Hello, world!"; };';
+        $this->filesystem->read('example.g')->willReturn('main += args => { println ! "Hello, world!"; };');
     }
 
     /**
@@ -45,15 +57,7 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
      */
     public function iRunIt()
     {
-        $grammar = new \Glitch\Grammar\GlitchFile();
-        $program = $grammar->parse($this->example);
-
-        $global = new \Glitch\Runtime\ActivationObject();
-        $global->set('main', new \Glitch\Runtime\EventValue());
-        $global->set('println', $this->println->reveal());
-
-        $program->run($global);
-        $global->get('main')->fire(new StringValue(''));
+        $this->interpreter->run('example.g', $this->output->reveal());
     }
 
     /**
@@ -61,6 +65,6 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeTheExpectedOutput()
     {
-        $this->println->fire(new StringValue("Hello, world!"))->shouldHaveBeenCalled();
+        $this->output->writeln('Hello, world!')->shouldHaveBeenCalled();
     }
 }
