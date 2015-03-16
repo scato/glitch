@@ -18,8 +18,8 @@ class CliFactorySpec extends ObjectBehavior
         $this->createActivationObject($output)->get('main')->shouldHaveType('Glitch\Runtime\EventValue');
     }
     
-    function it_creates_a_println_event(OutputInterface $output)
+    function it_creates_a_println_action(OutputInterface $output)
     {
-        $this->createActivationObject($output)->get('println')->shouldHaveType('Glitch\Runtime\EventValue');
+        $this->createActivationObject($output)->get('println')->shouldHaveType('Glitch\Runtime\ActionInterface');
     }
 }

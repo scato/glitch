@@ -15,9 +15,14 @@ class ActionValueSpec extends ObjectBehavior
         $this->beConstructedWith(['x'], [$statement], $parentScope);
     }
     
-    function it_is_an_event()
+    function it_is_an_action()
     {
-        $this->shouldHaveType('Glitch\Runtime\EventValue');
+        $this->shouldHaveType('Glitch\Runtime\ActionInterface');
+    }
+
+    function it_is_a_value()
+    {
+        $this->shouldHaveType('Glitch\Runtime\ValueInterface');
     }
 
     function it_should_invoke_its_statements_when_fired(StatementNode $statement, ActivationObject $parentScope, StringValue $value)

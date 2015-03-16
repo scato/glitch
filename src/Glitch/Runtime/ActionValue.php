@@ -2,7 +2,7 @@
 
 namespace Glitch\Runtime;
 
-class ActionValue extends EventValue
+class ActionValue implements ActionInterface, ValueInterface
 {
     private $parameters;
     private $statements;
@@ -15,7 +15,7 @@ class ActionValue extends EventValue
         $this->parentScope = $parentScope;
     }
 
-    public function fire($value)
+    public function fire(ValueInterface $value)
     {
         $scope = new ActivationObject($this->parentScope);
         $scope->set($this->parameters[0], $value);

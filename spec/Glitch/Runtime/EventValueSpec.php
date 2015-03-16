@@ -9,6 +9,16 @@ use Prophecy\Argument;
 
 class EventValueSpec extends ObjectBehavior
 {
+    function it_is_an_action()
+    {
+        $this->shouldHaveType('Glitch\Runtime\ActionInterface');
+    }
+
+    function it_is_a_value()
+    {
+        $this->shouldHaveType('Glitch\Runtime\ValueInterface');
+    }
+
     function it_fires_listeners_that_were_added(EventValue $listener)
     {
         $value = new StringValue('test');

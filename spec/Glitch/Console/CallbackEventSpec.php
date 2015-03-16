@@ -14,9 +14,14 @@ class CallbackEventSpec extends ObjectBehavior
         $this->beConstructedWith(array($output, 'writeln'));
     }
 
-    function it_is_an_event()
+    function it_is_an_action()
     {
-        $this->shouldHaveType('Glitch\Runtime\EventValue');
+        $this->shouldHaveType('Glitch\Runtime\ActionInterface');
+    }
+
+    function it_is_a_value()
+    {
+        $this->shouldHaveType('Glitch\Runtime\ValueInterface');
     }
 
     function it_calls_the_callback_with_the_string_value(OutputInterface $output)
