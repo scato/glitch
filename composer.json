@@ -2,12 +2,20 @@
     "name": "scato/glitch",
     "description": "An esoteric programming language based purely on events",
     "license": "MIT",
-    "require": {},
+    "bin": ["bin/glitch"],
+    "require": {
+        "league/flysystem": "~1.0",
+        "symfony/console": "~2.1"
+    },
     "require-dev": {
         "scato/phpeg": "1.*",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "behat/behat": "~3.0"
     },
     "autoload": {
-        "psr-4": { "Glitch\\": "src/Glitch/" }
+        "psr-4": {
+            "Glitch\\": "src/Glitch/",
+            "GlitchBundle\\": "src/GlitchBundle/"
+        }
     }
 }

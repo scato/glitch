@@ -1,0 +1,9 @@
+default:
+    suites:
+        acceptance:
+            paths:    [ %paths.base%/features ]
+            contexts: [ AcceptanceContext ]
+        system:
+            paths:    [ %paths.base%/features ]
+            contexts: [ SystemContext ]
+
