@@ -19,11 +19,6 @@ class ReferenceNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\ExpressionNode');
     }
 
-    function it_has_a_value()
-    {
-        $this->getValue()->shouldBe('main');
-    }
-
     function it_reduces_to_the_value_that_was_assigned_to_it(ActivationObject $scope, StringValue $value)
     {
         $scope->get('main')->willReturn($value);

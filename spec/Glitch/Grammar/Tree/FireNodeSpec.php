@@ -22,16 +22,6 @@ class FireNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\StatementNode');
     }
 
-    function it_has_a_left_hand_side(ReferenceNode $left)
-    {
-        $this->getLeft()->shouldBe($left);
-    }
-
-    function it_has_a_right_hand_side(StringNode $right)
-    {
-        $this->getRight()->shouldBe($right);
-    }
-
     function it_fires_an_event_when_invoked(ActivationObject $scope, ReferenceNode $left, ReferenceNode $right, EventValue $event, StringValue $value)
     {
         $left->reduce($scope)->willReturn($event);

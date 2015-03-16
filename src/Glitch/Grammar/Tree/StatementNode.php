@@ -4,8 +4,17 @@ namespace Glitch\Grammar\Tree;
 
 use Glitch\Interpreter\ActivationObject;
 
-interface StatementNode
+abstract class StatementNode
 {
-    public function invoke(ActivationObject $scope);
+    protected $left;
+    protected $right;
+
+    public function __construct($left, $right)
+    {
+        $this->left = $left;
+        $this->right = $right;
+    }
+
+    abstract public function invoke(ActivationObject $scope);
 }
 

@@ -19,16 +19,6 @@ class ActionNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\ExpressionNode');
     }
 
-    function it_has_parameters()
-    {
-        $this->getParameters()->shouldBeLike(['x']);
-    }
-
-    function it_has_statements(FireNode $statement)
-    {
-        $this->getStatements()->shouldBeLike([$statement]);
-    }
-
     function it_reduces_to_an_action_value(ActivationObject $scope)
     {
         $this->reduce($scope)->shouldHaveType('Glitch\Interpreter\ActionValue');

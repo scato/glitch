@@ -16,16 +16,6 @@ class ActionNode implements ExpressionNode
         $this->statements = $statements;
     }
 
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    public function getStatements()
-    {
-        return $this->statements;
-    }
-
     public function reduce(ActivationObject $scope)
     {
         return new ActionValue($this->parameters, $this->statements, $scope);

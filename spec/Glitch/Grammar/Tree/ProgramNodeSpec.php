@@ -14,11 +14,6 @@ class ProgramNodeSpec extends ObjectBehavior
         $this->beConstructedWith(array($statement));
     }
 
-    function it_has_statements(FireNode $statement)
-    {
-        $this->getStatements()->shouldBeLike(array($statement));
-    }
-
     function it_invokes_all_statements_when_run(ActivationObject $scope, FireNode $statement)
     {
         $this->run($scope);

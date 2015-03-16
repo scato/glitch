@@ -18,11 +18,6 @@ class StringNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\ExpressionNode');
     }
 
-    function it_has_a_value()
-    {
-        $this->getValue()->shouldBe('"test"');
-    }
-
     function it_reduces_to_a_string_value(ActivationObject $scope)
     {
         $this->reduce($scope)->shouldHaveType('Glitch\Interpreter\StringValue');

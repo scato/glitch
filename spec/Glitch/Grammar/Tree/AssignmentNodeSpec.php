@@ -13,14 +13,4 @@ class AssignmentNodeSpec extends ObjectBehavior
     {
         $this->beConstructedWith($left, $right);
     }
-
-    function it_has_a_left_hand_side(ReferenceNode $left)
-    {
-        $this->getLeft()->shouldBe($left);
-    }
-
-    function it_has_a_right_hand_side(StringNode $right)
-    {
-        $this->getRight()->shouldBe($right);
-    }
 }
