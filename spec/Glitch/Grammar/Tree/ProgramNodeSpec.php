@@ -3,7 +3,7 @@
 namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\FireNode;
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

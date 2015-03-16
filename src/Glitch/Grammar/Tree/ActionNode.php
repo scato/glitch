@@ -2,8 +2,8 @@
 
 namespace Glitch\Grammar\Tree;
 
-use Glitch\Interpreter\ActionValue;
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActionValue;
+use Glitch\Runtime\ActivationObject;
 
 class ActionNode implements ExpressionNode
 {

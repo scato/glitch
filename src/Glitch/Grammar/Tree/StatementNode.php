@@ -2,7 +2,7 @@
 
 namespace Glitch\Grammar\Tree;
 
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActivationObject;
 
 abstract class StatementNode
 {

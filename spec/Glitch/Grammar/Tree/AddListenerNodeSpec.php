@@ -3,8 +3,8 @@
 namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\ReferenceNode;
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\EventValue;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\EventValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

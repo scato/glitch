@@ -2,8 +2,8 @@
 
 namespace spec\Glitch\Grammar\Tree;
 
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

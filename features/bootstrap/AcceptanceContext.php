@@ -5,7 +5,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\StringValue;
 use Prophecy\Prophet;
 
 /**
@@ -29,7 +29,7 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
         $this->prophet = new Prophet();
 
         $this->println = $this->prophet->prophesize();
-        $this->println->willExtend('Glitch\Interpreter\EventValue');
+        $this->println->willExtend('Glitch\Runtime\EventValue');
     }
 
     /**
@@ -48,8 +48,8 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
         $grammar = new \Glitch\Grammar\GlitchFile();
         $program = $grammar->parse($this->example);
 
-        $global = new \Glitch\Interpreter\ActivationObject();
-        $global->set('main', new \Glitch\Interpreter\EventValue());
+        $global = new \Glitch\Runtime\ActivationObject();
+        $global->set('main', new \Glitch\Runtime\EventValue());
         $global->set('println', $this->println->reveal());
 
         $program->run($global);

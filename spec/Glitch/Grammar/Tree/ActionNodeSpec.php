@@ -3,7 +3,7 @@
 namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\FireNode;
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -21,6 +21,6 @@ class ActionNodeSpec extends ObjectBehavior
 
     function it_reduces_to_an_action_value(ActivationObject $scope)
     {
-        $this->reduce($scope)->shouldHaveType('Glitch\Interpreter\ActionValue');
+        $this->reduce($scope)->shouldHaveType('Glitch\Runtime\ActionValue');
     }
 }

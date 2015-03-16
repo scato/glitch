@@ -4,9 +4,9 @@ namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\EventValue;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\EventValue;
+use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

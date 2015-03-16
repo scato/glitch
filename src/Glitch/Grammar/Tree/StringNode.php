@@ -2,8 +2,8 @@
 
 namespace Glitch\Grammar\Tree;
 
-use Glitch\Interpreter\ActivationObject;
-use Glitch\Interpreter\StringValue;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\StringValue;
 
 class StringNode extends NullaryExpressionNode
 {

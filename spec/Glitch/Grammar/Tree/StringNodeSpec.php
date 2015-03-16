@@ -2,7 +2,7 @@
 
 namespace spec\Glitch\Grammar\Tree;
 
-use Glitch\Interpreter\ActivationObject;
+use Glitch\Runtime\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -20,7 +20,7 @@ class StringNodeSpec extends ObjectBehavior
 
     function it_reduces_to_a_string_value(ActivationObject $scope)
     {
-        $this->reduce($scope)->shouldHaveType('Glitch\Interpreter\StringValue');
+        $this->reduce($scope)->shouldHaveType('Glitch\Runtime\StringValue');
         $this->reduce($scope)->toString()->shouldBe('test');
     }
 }
