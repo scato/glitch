@@ -25,7 +25,7 @@ class ActivationObject
         throw new ReferenceException($key);
     }
 
-    public function set($key, $value)
+    public function set($key, ValueInterface $value)
     {
         if (isset($this->values[$key])) {
             throw new AssignmentException($key);

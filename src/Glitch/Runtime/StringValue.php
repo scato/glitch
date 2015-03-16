@@ -2,7 +2,7 @@
 
 namespace Glitch\Runtime;
 
-class StringValue
+class StringValue implements ValueInterface
 {
     private $value;
 

@@ -2,7 +2,7 @@
 
 namespace Glitch\Runtime;
 
-class EventValue
+class EventValue implements ValueInterface
 {
     private $listeners = array();
 
