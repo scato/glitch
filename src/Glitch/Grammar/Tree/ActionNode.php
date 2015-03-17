@@ -10,7 +10,7 @@ class ActionNode implements ExpressionNode
     private $parameters;
     private $statements;
 
-    public function __construct($parameters, $statements)
+    public function __construct(array $parameters, array $statements)
     {
         $this->parameters = $parameters;
         $this->statements = $statements;
