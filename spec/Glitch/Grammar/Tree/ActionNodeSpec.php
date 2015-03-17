@@ -11,7 +11,7 @@ class ActionNodeSpec extends ObjectBehavior
 {
     function let(FireNode $statement)
     {
-        $this->beConstructedWith(['x'], [$statement]);
+        $this->beConstructedWith(['x', 'y'], [$statement]);
     }
 
     function it_is_an_expression()

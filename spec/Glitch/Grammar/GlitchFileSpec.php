@@ -97,4 +97,13 @@ class GlitchFileSpec extends ObjectBehavior
             ])])
         );
     }
+
+    function it_should_parse_an_action_literal_with_multiple_parameters()
+    {
+        $this->parse('main ! (argc, argv) => { print ! argc; };')->shouldBeLike(
+            $this->a_program_with([new ActionNode(['argc', 'argv'], [
+                new FireNode(new ReferenceNode('print'), [new ReferenceNode('argc')])
+            ])])
+        );
+    }
 }
