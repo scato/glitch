@@ -18,7 +18,7 @@ grammar GlitchFile
 
     EventDefinitionStatement = "*" _ names:IdentifierList _ ";" { return new EventDefinitionNode($names); };
     AssignmentStatement = left:Expression _ ":=" _ right:Expression _ ";" { return new AssignmentNode($left, $right); };
-    FireStatement = left:Expression _ "!" _ right:Expression _ ";" { return new FireNode($left, $right); };
+    FireStatement = left:Expression _ "!" _ right:ArgumentList _ ";" { return new FireNode($left, $right); };
     AddListenerStatement = left:Expression _ "+=" _ right:Expression _ ";" { return new AddListenerNode($left, $right); };
     RemoveListenerStatement = left:Expression _ "-=" _ right:Expression _ ";" { return new RemoveListenerNode($left, $right); };
 
@@ -32,6 +32,8 @@ grammar GlitchFile
     Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
     StatementList = (_ statement:Statement { return $statement; })*;
     ParameterList = (parameter:Identifier { return [$parameter]; });
+    ArgumentList = (argument:Expression { return [$argument]; }) / ("(" _ arguments:ExpressionList _ ")" { return $arguments; });
     IdentifierList = first:Identifier rest:(_ "," _ next:Identifier { return $next; })* { return array_merge([$first], $rest); };
+    ExpressionList = first:Expression rest:(_ "," _ next:Expression { return $next; })* { return array_merge([$first], $rest); };
 }
 

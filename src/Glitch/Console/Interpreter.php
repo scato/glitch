@@ -30,6 +30,6 @@ class Interpreter
         $global = $this->activationObjectFactory->createActivationObject($output);
 
         $program->run($global);
-        $global->get('main')->fire(new StringValue(''));
+        $global->get('main')->fire([new StringValue('')]);
     }
 }

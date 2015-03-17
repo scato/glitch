@@ -26,7 +26,7 @@ class CallbackEventSpec extends ObjectBehavior
 
     function it_calls_the_callback_with_the_string_value(OutputInterface $output)
     {
-        $this->fire(new StringValue('test'));
+        $this->fire([new StringValue('test')]);
 
         $output->writeln('test')->shouldBeCalled();
     }

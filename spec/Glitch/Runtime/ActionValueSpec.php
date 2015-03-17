@@ -12,7 +12,7 @@ class ActionValueSpec extends ObjectBehavior
 {
     function let(StatementNode $statement, ActivationObject $parentScope)
     {
-        $this->beConstructedWith(['x'], [$statement], $parentScope);
+        $this->beConstructedWith(['x', 'y'], [$statement], $parentScope);
     }
     
     function it_is_an_action()
@@ -25,12 +25,15 @@ class ActionValueSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Runtime\ValueInterface');
     }
 
-    function it_should_invoke_its_statements_when_fired(StatementNode $statement, ActivationObject $parentScope, StringValue $value)
+    function it_should_invoke_its_statements_when_fired(StatementNode $statement, ActivationObject $parentScope)
     {
-        $this->fire($value);
+        $values = [new StringValue('a'), new StringValue('b')];
+
+        $this->fire($values);
 
         $scope = new ActivationObject($parentScope->getWrappedObject());
-        $scope->set('x', $value->getWrappedObject());
+        $scope->set('x', new StringValue('a'));
+        $scope->set('y', new StringValue('b'));
 
         $statement->invoke($scope)->shouldBeCalled();
     }

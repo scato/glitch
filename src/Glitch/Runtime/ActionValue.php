@@ -15,10 +15,12 @@ class ActionValue implements ActionInterface, ValueInterface
         $this->parentScope = $parentScope;
     }
 
-    public function fire(ValueInterface $value)
+    public function fire(array $values)
     {
         $scope = new ActivationObject($this->parentScope);
-        $scope->set($this->parameters[0], $value);
+        foreach ($this->parameters as $index => $parameter) {
+            $scope->set($parameter, $values[$index]);
+        }
 
         foreach ($this->statements as $statement) {
             $statement->invoke($scope);

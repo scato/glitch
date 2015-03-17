@@ -37,6 +37,6 @@ class InterpreterSpec extends ObjectBehavior
         $this->run('example.g', $output);
 
         $programNode->run($activationObject)->shouldBeCalled();
-        $main->fire(new StringValue(""))->shouldBeCalled();
+        $main->fire([new StringValue("")])->shouldBeCalled();
     }
 }

@@ -365,7 +365,7 @@ class GlitchFile
         if ($_success) {
             $_value6[] = $this->value;
 
-            $_success = $this->parseExpression();
+            $_success = $this->parseArgumentList();
 
             if ($_success) {
                 $right = $this->value;
@@ -1209,6 +1209,113 @@ class GlitchFile
         return $_success;
     }
 
+    protected function parseArgumentList()
+    {
+        $_position = $this->position;
+
+        if (isset($this->cache['ArgumentList'][$_position])) {
+            $_success = $this->cache['ArgumentList'][$_position]['success'];
+            $this->position = $this->cache['ArgumentList'][$_position]['position'];
+            $this->value = $this->cache['ArgumentList'][$_position]['value'];
+
+            return $_success;
+        }
+
+        $_position33 = $this->position;
+        $_cut34 = $this->cut;
+
+        $this->cut = false;
+        $_success = $this->parseExpression();
+
+        if ($_success) {
+            $argument = $this->value;
+        }
+
+        if ($_success) {
+            $this->value = call_user_func(function () use (&$argument) {
+                return [$argument];
+            });
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position33;
+
+            $_value32 = array();
+
+            if (substr($this->string, $this->position, strlen("(")) === "(") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("("));
+                $this->position += strlen("(");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"("');
+            }
+
+            if ($_success) {
+                $_value32[] = $this->value;
+
+                $_success = $this->parse_();
+            }
+
+            if ($_success) {
+                $_value32[] = $this->value;
+
+                $_success = $this->parseExpressionList();
+
+                if ($_success) {
+                    $arguments = $this->value;
+                }
+            }
+
+            if ($_success) {
+                $_value32[] = $this->value;
+
+                $_success = $this->parse_();
+            }
+
+            if ($_success) {
+                $_value32[] = $this->value;
+
+                if (substr($this->string, $this->position, strlen(")")) === ")") {
+                    $_success = true;
+                    $this->value = substr($this->string, $this->position, strlen(")"));
+                    $this->position += strlen(")");
+                } else {
+                    $_success = false;
+
+                    $this->report($this->position, '")"');
+                }
+            }
+
+            if ($_success) {
+                $_value32[] = $this->value;
+
+                $this->value = $_value32;
+            }
+
+            if ($_success) {
+                $this->value = call_user_func(function () use (&$argument, &$arguments) {
+                    return $arguments;
+                });
+            }
+        }
+
+        $this->cut = $_cut34;
+
+        $this->cache['ArgumentList'][$_position] = array(
+            'success' => $_success,
+            'position' => $this->position,
+            'value' => $this->value
+        );
+
+        if (!$_success) {
+            $this->report($_position, 'ArgumentList');
+        }
+
+        return $_success;
+    }
+
     protected function parseIdentifierList()
     {
         $_position = $this->position;
@@ -1221,7 +1328,7 @@ class GlitchFile
             return $_success;
         }
 
-        $_value36 = array();
+        $_value39 = array();
 
         $_success = $this->parseIdentifier();
 
@@ -1230,21 +1337,21 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value36[] = $this->value;
+            $_value39[] = $this->value;
 
-            $_value34 = array();
-            $_cut35 = $this->cut;
+            $_value37 = array();
+            $_cut38 = $this->cut;
 
             while (true) {
-                $_position33 = $this->position;
+                $_position36 = $this->position;
 
                 $this->cut = false;
-                $_value32 = array();
+                $_value35 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value32[] = $this->value;
+                    $_value35[] = $this->value;
 
                     if (substr($this->string, $this->position, strlen(",")) === ",") {
                         $_success = true;
@@ -1258,13 +1365,13 @@ class GlitchFile
                 }
 
                 if ($_success) {
-                    $_value32[] = $this->value;
+                    $_value35[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value32[] = $this->value;
+                    $_value35[] = $this->value;
 
                     $_success = $this->parseIdentifier();
 
@@ -1274,9 +1381,9 @@ class GlitchFile
                 }
 
                 if ($_success) {
-                    $_value32[] = $this->value;
+                    $_value35[] = $this->value;
 
-                    $this->value = $_value32;
+                    $this->value = $_value35;
                 }
 
                 if ($_success) {
@@ -1289,16 +1396,16 @@ class GlitchFile
                     break;
                 }
 
-                $_value34[] = $this->value;
+                $_value37[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position33;
-                $this->value = $_value34;
+                $this->position = $_position36;
+                $this->value = $_value37;
             }
 
-            $this->cut = $_cut35;
+            $this->cut = $_cut38;
 
             if ($_success) {
                 $rest = $this->value;
@@ -1306,9 +1413,9 @@ class GlitchFile
         }
 
         if ($_success) {
-            $_value36[] = $this->value;
+            $_value39[] = $this->value;
 
-            $this->value = $_value36;
+            $this->value = $_value39;
         }
 
         if ($_success) {
@@ -1325,6 +1432,127 @@ class GlitchFile
 
         if (!$_success) {
             $this->report($_position, 'IdentifierList');
+        }
+
+        return $_success;
+    }
+
+    protected function parseExpressionList()
+    {
+        $_position = $this->position;
+
+        if (isset($this->cache['ExpressionList'][$_position])) {
+            $_success = $this->cache['ExpressionList'][$_position]['success'];
+            $this->position = $this->cache['ExpressionList'][$_position]['position'];
+            $this->value = $this->cache['ExpressionList'][$_position]['value'];
+
+            return $_success;
+        }
+
+        $_value44 = array();
+
+        $_success = $this->parseExpression();
+
+        if ($_success) {
+            $first = $this->value;
+        }
+
+        if ($_success) {
+            $_value44[] = $this->value;
+
+            $_value42 = array();
+            $_cut43 = $this->cut;
+
+            while (true) {
+                $_position41 = $this->position;
+
+                $this->cut = false;
+                $_value40 = array();
+
+                $_success = $this->parse_();
+
+                if ($_success) {
+                    $_value40[] = $this->value;
+
+                    if (substr($this->string, $this->position, strlen(",")) === ",") {
+                        $_success = true;
+                        $this->value = substr($this->string, $this->position, strlen(","));
+                        $this->position += strlen(",");
+                    } else {
+                        $_success = false;
+
+                        $this->report($this->position, '","');
+                    }
+                }
+
+                if ($_success) {
+                    $_value40[] = $this->value;
+
+                    $_success = $this->parse_();
+                }
+
+                if ($_success) {
+                    $_value40[] = $this->value;
+
+                    $_success = $this->parseExpression();
+
+                    if ($_success) {
+                        $next = $this->value;
+                    }
+                }
+
+                if ($_success) {
+                    $_value40[] = $this->value;
+
+                    $this->value = $_value40;
+                }
+
+                if ($_success) {
+                    $this->value = call_user_func(function () use (&$first, &$next) {
+                        return $next;
+                    });
+                }
+
+                if (!$_success) {
+                    break;
+                }
+
+                $_value42[] = $this->value;
+            }
+
+            if (!$this->cut) {
+                $_success = true;
+                $this->position = $_position41;
+                $this->value = $_value42;
+            }
+
+            $this->cut = $_cut43;
+
+            if ($_success) {
+                $rest = $this->value;
+            }
+        }
+
+        if ($_success) {
+            $_value44[] = $this->value;
+
+            $this->value = $_value44;
+        }
+
+        if ($_success) {
+            $this->value = call_user_func(function () use (&$first, &$next, &$rest) {
+                return array_merge([$first], $rest);
+            });
+        }
+
+        $this->cache['ExpressionList'][$_position] = array(
+            'success' => $_success,
+            'position' => $this->position,
+            'value' => $this->value
+        );
+
+        if (!$_success) {
+            $this->report($_position, 'ExpressionList');
         }
 
         return $_success;

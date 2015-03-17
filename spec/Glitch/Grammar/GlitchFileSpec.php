@@ -16,10 +16,10 @@ use Prophecy\Argument;
 
 class GlitchFileSpec extends ObjectBehavior
 {
-    function a_program_with($expression)
+    function a_program_with(array $expressions)
     {
         return new ProgramNode([
-            new FireNode(new ReferenceNode('main'), $expression)
+            new FireNode(new ReferenceNode('main'), $expressions)
         ]);
     }
 
@@ -49,7 +49,14 @@ class GlitchFileSpec extends ObjectBehavior
     function it_should_parse_a_fire_statement()
     {
         $this->parse('main ! "";')->shouldBeLike(
-            $this->a_program_with(new StringNode('""'))
+            $this->a_program_with([new StringNode('""')])
+        );
+    }
+
+    function it_should_parse_a_fire_statement_with_multiple_arguments()
+    {
+        $this->parse('main ! ("a", "b");')->shouldBeLike(
+            $this->a_program_with([new StringNode('"a"'), new StringNode('"b"')])
         );
     }
 
@@ -58,7 +65,7 @@ class GlitchFileSpec extends ObjectBehavior
         $this->parse('main += args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
                 new AddListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
-                    new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
+                    new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
                 ]))
             ])
         );
@@ -69,7 +76,7 @@ class GlitchFileSpec extends ObjectBehavior
         $this->parse('main -= args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
                 new RemoveListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
-                    new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
+                    new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
                 ]))
             ])
         );
@@ -78,16 +85,16 @@ class GlitchFileSpec extends ObjectBehavior
     function it_should_parse_a_string_literal()
     {
         $this->parse('main ! "Hello, world!\\n";')->shouldBeLike(
-            $this->a_program_with(new StringNode('"Hello, world!\\n"'))
+            $this->a_program_with([new StringNode('"Hello, world!\\n"')])
         );
     }
 
     function it_should_parse_an_action_literal()
     {
         $this->parse('main ! args => { print ! args; };')->shouldBeLike(
-            $this->a_program_with(new ActionNode(['args'], [
-                new FireNode(new ReferenceNode('print'), new ReferenceNode('args'))
-            ]))
+            $this->a_program_with([new ActionNode(['args'], [
+                new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
+            ])])
         );
     }
 }

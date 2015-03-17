@@ -4,6 +4,7 @@ namespace Glitch\Console;
 
 use Glitch\Runtime\ActionInterface;
 use Glitch\Runtime\EventValue;
+use Glitch\Runtime\StringValue;
 use Glitch\Runtime\ValueInterface;
 
 class CallbackEvent implements ActionInterface, ValueInterface
@@ -15,8 +16,12 @@ class CallbackEvent implements ActionInterface, ValueInterface
         $this->callback = $callback;
     }
 
-    public function fire(ValueInterface $value)
+    public function fire(array $values)
     {
-        call_user_func($this->callback, $value->toString());
+        $strings = array_map(function (StringValue $value) {
+            return $value->toString();
+        }, $values);
+
+        call_user_func_array($this->callback, $strings);
     }
 }

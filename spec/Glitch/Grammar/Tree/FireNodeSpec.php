@@ -12,9 +12,9 @@ use Prophecy\Argument;
 
 class FireNodeSpec extends ObjectBehavior
 {
-    function let(ReferenceNode $left, StringNode $right)
+    function let(ReferenceNode $left, StringNode $a, StringNode $b)
     {
-        $this->beConstructedWith($left, $right);
+        $this->beConstructedWith($left, [$a, $b]);
     }
 
     function it_is_a_statement()
@@ -22,13 +22,14 @@ class FireNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\StatementNode');
     }
 
-    function it_fires_an_event_when_invoked(ActivationObject $scope, ReferenceNode $left, ReferenceNode $right, EventValue $event, StringValue $value)
+    function it_fires_an_event_when_invoked(ActivationObject $scope, ReferenceNode $left, StringNode $a, StringNode $b, EventValue $event)
     {
         $left->reduce($scope)->willReturn($event);
-        $right->reduce($scope)->willReturn($value);
+        $a->reduce($scope)->willReturn(new StringValue('a'));
+        $b->reduce($scope)->willReturn(new StringValue('b'));
 
         $this->invoke($scope);
 
-        $event->fire($value)->shouldBeCalled();
+        $event->fire([new StringValue('a'), new StringValue('b')])->shouldBeCalled();
     }
 }
