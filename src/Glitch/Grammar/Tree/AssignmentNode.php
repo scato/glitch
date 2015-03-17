@@ -4,7 +4,7 @@ namespace Glitch\Grammar\Tree;
 
 use Glitch\Runtime\ActivationObject;
 
-class AssignmentNode extends StatementNode
+class AssignmentNode implements StatementNode
 {
     public function invoke(ActivationObject $scope)
     {

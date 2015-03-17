@@ -3,6 +3,7 @@ namespace Glitch\Grammar;
 use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\AssignmentNode;
+use Glitch\Grammar\Tree\EventDefinitionNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -13,8 +14,9 @@ grammar GlitchFile
 {
     start Program = statements:StatementList _ { return new ProgramNode($statements); };
     
-    Statement = AssignmentStatement / FireStatement / AddListenerStatement / RemoveListenerStatement;
+    Statement = EventDefinitionStatement / AssignmentStatement / FireStatement / AddListenerStatement / RemoveListenerStatement;
 
+    EventDefinitionStatement = "*" _ names:IdentifierList _ ";" { return new EventDefinitionNode($names); };
     AssignmentStatement = left:Expression _ ":=" _ right:Expression _ ";" { return new AssignmentNode($left, $right); };
     FireStatement = left:Expression _ "!" _ right:Expression _ ";" { return new FireNode($left, $right); };
     AddListenerStatement = left:Expression _ "+=" _ right:Expression _ ";" { return new AddListenerNode($left, $right); };
@@ -30,5 +32,6 @@ grammar GlitchFile
     Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
     StatementList = (_ statement:Statement { return $statement; })*;
     ParameterList = (parameter:Identifier { return [$parameter]; });
+    IdentifierList = first:Identifier rest:(_ "," _ next:Identifier { return $next; })* { return array_merge([$first], $rest); };
 }
 
