@@ -37,10 +37,12 @@ grammar GlitchFile
     _ = [\r\t\n ]*;
     Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
     StatementList = (_ statement:Statement { return $statement; })*;
-    ParameterList = (parameter:Identifier { return [$parameter]; })
-                  / ("(" _ parameters:IdentifierList _ ")" { return $parameters; });
-    ArgumentList = (argument:Expression { return [$argument]; })
-                 / ("(" _ arguments:ExpressionList _ ")" { return $arguments; });
+    ParameterList = parameter:Identifier { return [$parameter]; }
+                  / "(" _ ")" { return []; }
+                  / "(" _ parameters:IdentifierList _ ")" { return $parameters; };
+    ArgumentList = argument:Expression { return [$argument]; }
+                 / "(" _ ")" { return []; }
+                 / "(" _ arguments:ExpressionList _ ")" { return $arguments; };
     IdentifierList = first:Identifier rest:(_ "," _ next:Identifier { return $next; })* { return array_merge([$first], $rest); };
     ExpressionList = first:Expression rest:(_ "," _ next:Expression { return $next; })* { return array_merge([$first], $rest); };
 }

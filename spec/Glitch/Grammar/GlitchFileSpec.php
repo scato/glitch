@@ -53,6 +53,13 @@ class GlitchFileSpec extends ObjectBehavior
         );
     }
 
+    function it_should_parse_a_fire_statement_with_zero_arguments()
+    {
+        $this->parse('main ! ();')->shouldBeLike(
+            $this->a_program_with([])
+        );
+    }
+
     function it_should_parse_a_fire_statement_with_multiple_arguments()
     {
         $this->parse('main ! ("a", "b");')->shouldBeLike(
@@ -94,6 +101,15 @@ class GlitchFileSpec extends ObjectBehavior
         $this->parse('main ! args => { print ! args; };')->shouldBeLike(
             $this->a_program_with([new ActionNode(['args'], [
                 new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
+            ])])
+        );
+    }
+
+    function it_should_parse_an_action_literal_with_zero_parameters()
+    {
+        $this->parse('main ! () => { print ! ""; };')->shouldBeLike(
+            $this->a_program_with([new ActionNode([], [
+                new FireNode(new ReferenceNode('print'), [new StringNode('""')])
             ])])
         );
     }
