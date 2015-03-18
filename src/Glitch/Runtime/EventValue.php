@@ -15,9 +15,9 @@ class EventValue implements ActionInterface, ValueInterface
     {
         $listeners = array();
 
-        foreach ($this->listeners as $listener) {
-            if ($listener !== $listener) {
-                $listeners[] = $listener;
+        foreach ($this->listeners as $someListener) {
+            if ($someListener !== $listener) {
+                $listeners[] = $someListener;
             }
         }
 
