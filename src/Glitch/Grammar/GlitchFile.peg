@@ -3,8 +3,10 @@ namespace Glitch\Grammar;
 use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\AssignmentNode;
+use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\EventDefinitionNode;
 use Glitch\Grammar\Tree\FireNode;
+use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\RemoveListenerNode;
@@ -27,12 +29,19 @@ grammar GlitchFile
     RemoveListenerStatement = left:Expression _ "-=" _ right:Expression _ ";" { return new RemoveListenerNode($left, $right); };
 
     Expression = ActionLiteral
-               / ReferenceExpression
-               / StringLiteral;
+               / FunctionLiteral
+               / CallExpression
+               / PrimaryExpression;
+
+    PrimaryExpression = StringLiteral
+                      / ReferenceExpression;
 
     ReferenceExpression = value:Identifier { return new ReferenceNode($value); };
+    CallExpression = left:PrimaryExpression _ "(" _ ")" { return new CallNode($left, []); }
+                   / left:PrimaryExpression _ "(" _ right:ExpressionList _ ")" { return new CallNode($left, $right); };
     StringLiteral = value:$("\"" ([^\\"] / "\\" .)* "\"") { return new StringNode($value); };
     ActionLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new ActionNode($parameters, $statements); };
+    FunctionLiteral = parameters:ParameterList _ "->" _ expression:Expression { return new FunctionNode($parameters, $expression); };
 
     _ = [\r\t\n ]*;
     Identifier = $([A-Za-z_] [A-Za-z0-9_]*);

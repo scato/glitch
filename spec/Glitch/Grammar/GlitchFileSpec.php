@@ -5,8 +5,10 @@ namespace spec\Glitch\Grammar;
 use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\AssignmentNode;
+use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\EventDefinitionNode;
 use Glitch\Grammar\Tree\FireNode;
+use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\RemoveListenerNode;
@@ -96,12 +98,26 @@ class GlitchFileSpec extends ObjectBehavior
         );
     }
 
+    function it_should_parse_a_function_call_expression()
+    {
+        $this->parse('main ! strtoupper("Hello, world!\\n");')->shouldBeLike(
+            $this->a_program_with([new CallNode(new ReferenceNode('strtoupper'), [new StringNode('"Hello, world!\\n"')])])
+        );
+    }
+
     function it_should_parse_an_action_literal()
     {
         $this->parse('main ! args => { print ! args; };')->shouldBeLike(
             $this->a_program_with([new ActionNode(['args'], [
                 new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
             ])])
+        );
+    }
+
+    function it_should_parse_a_function_literal()
+    {
+        $this->parse('main ! args -> args;')->shouldBeLike(
+            $this->a_program_with([new FunctionNode(['args'], new ReferenceNode('args'))])
         );
     }
 
