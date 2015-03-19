@@ -13,9 +13,9 @@ class CliFactory
         return new EventValue();
     }
 
-    private function createPrintlnEvent(OutputInterface $output)
+    private function createPrintlnAction(OutputInterface $output)
     {
-        return new CallbackEvent(array($output, 'writeln'));
+        return new CallbackAction(array($output, 'writeln'));
     }
 
     public function createActivationObject(OutputInterface $output)
@@ -23,7 +23,7 @@ class CliFactory
         $activationObject = new ActivationObject();
 
         $activationObject->set('main', $this->createMainEvent());
-        $activationObject->set('println', $this->createPrintlnEvent($output));
+        $activationObject->set('println', $this->createPrintlnAction($output));
 
         return $activationObject;
     }

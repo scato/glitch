@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CallbackEventSpec extends ObjectBehavior
+class CallbackActionSpec extends ObjectBehavior
 {
     function let(OutputInterface $output)
     {

@@ -7,7 +7,7 @@ use Glitch\Runtime\EventValue;
 use Glitch\Runtime\StringValue;
 use Glitch\Runtime\ValueInterface;
 
-class CallbackEvent implements ActionInterface, ValueInterface
+class CallbackAction implements ActionInterface, ValueInterface
 {
     private $callback;
 
