@@ -5,7 +5,7 @@ namespace spec\Glitch\Grammar\Tree;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
 use Glitch\Runtime\ActivationObject;
-use Glitch\Runtime\EventValue;
+use Glitch\Runtime\ActionInterface;
 use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -22,14 +22,14 @@ class FireNodeSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Grammar\Tree\StatementNode');
     }
 
-    function it_fires_an_event_when_invoked(ActivationObject $scope, ReferenceNode $left, StringNode $a, StringNode $b, EventValue $event)
+    function it_should_fire_an_action_when_invoked(ActivationObject $scope, ReferenceNode $left, StringNode $a, StringNode $b, ActionInterface $action)
     {
-        $left->reduce($scope)->willReturn($event);
+        $left->reduce($scope)->willReturn($action);
         $a->reduce($scope)->willReturn(new StringValue('a'));
         $b->reduce($scope)->willReturn(new StringValue('b'));
 
         $this->invoke($scope);
 
-        $event->fire([new StringValue('a'), new StringValue('b')])->shouldBeCalled();
+        $action->fire([new StringValue('a'), new StringValue('b')])->shouldBeCalled();
     }
 }
