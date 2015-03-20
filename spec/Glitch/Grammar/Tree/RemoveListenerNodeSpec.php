@@ -3,13 +3,14 @@
 namespace spec\Glitch\Grammar\Tree;
 
 use Glitch\Grammar\Tree\ReferenceNode;
-use Glitch\Grammar\Tree\StringNode;
+use Glitch\Runtime\ActivationObject;
+use Glitch\Runtime\EventValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class RemoveListenerNodeSpec extends ObjectBehavior
 {
-    function let(ReferenceNode $left, StringNode $right)
+    function let(ReferenceNode $left, ReferenceNode $right)
     {
         $this->beConstructedWith($left, $right);
     }
@@ -17,5 +18,15 @@ class RemoveListenerNodeSpec extends ObjectBehavior
     function it_is_a_statement()
     {
         $this->shouldHaveType('Glitch\Grammar\Tree\StatementNode');
+    }
+
+    function it_removes_a_listener_when_invoked(ActivationObject $scope, ReferenceNode $left, ReferenceNode $right, EventValue $event, EventValue $listener)
+    {
+        $left->reduce($scope)->willReturn($event);
+        $right->reduce($scope)->willReturn($listener);
+
+        $this->invoke($scope);
+
+        $event->removeListener($listener)->shouldBeCalled();
     }
 }

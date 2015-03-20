@@ -8,6 +8,9 @@ class RemoveListenerNode extends EventStatementNode
 {
     public function invoke(ActivationObject $scope)
     {
-        // TODO
+        $left = $this->left->reduce($scope);
+        $right = $this->right->reduce($scope);
+
+        $left->removeListener($right);
     }
 }
