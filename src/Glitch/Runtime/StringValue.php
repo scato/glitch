@@ -2,6 +2,8 @@
 
 namespace Glitch\Runtime;
 
+use RuntimeException;
+
 class StringValue implements ValueInterface
 {
     private $value;
@@ -14,5 +16,16 @@ class StringValue implements ValueInterface
     public function toString()
     {
         return $this->value;
+    }
+
+    public function toBoolean()
+    {
+        if ($this->value === 'true') {
+            return true;
+        } elseif ($this->value === 'false') {
+            return false;
+        } else {
+            throw new RuntimeException('Not a boolean');
+        }
     }
 }
