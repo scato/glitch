@@ -1,0 +1,41 @@
+namespace Glitch\Grammar;
+
+use Glitch\Grammar\Tree\ActionNode;
+use Glitch\Grammar\Tree\CallNode;
+use Glitch\Grammar\Tree\FunctionNode;
+use Glitch\Grammar\Tree\ReferenceNode;
+use Glitch\Grammar\Tree\StringNode;
+
+grammar GlitchExpression
+{
+    start Expression = ActionLiteral
+                     / FunctionLiteral
+                     / CallExpression
+                     / Terminal;
+
+    CallExpression = left:PrimaryExpression _ "(" _ ")" { return new CallNode($left, []); }
+                   / left:PrimaryExpression _ "(" _ right:ExpressionList _ ")" { return new CallNode($left, $right); };
+    ActionLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new ActionNode($parameters, $statements); };
+    FunctionLiteral = parameters:ParameterList _ "->" _ expression:Expression { return new FunctionNode($parameters, $expression); };
+
+    PrimaryExpression = Terminal;
+
+    Terminal = StringLiteral
+             / Reference;
+
+    StringLiteral = value:$("\"" ([^\\"] / "\\" .)* "\"") { return new StringNode($value); };
+    Reference = value:Identifier { return new ReferenceNode($value); };
+
+    _ = [\r\t\n ]*;
+    Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
+    StatementList = _ "STATEMENTS" { return []; };
+    ParameterList = parameter:Identifier { return [$parameter]; }
+                  / "(" _ ")" { return []; }
+                  / "(" _ parameters:IdentifierList _ ")" { return $parameters; };
+    ArgumentList = argument:Expression { return [$argument]; }
+                 / "(" _ ")" { return []; }
+                 / "(" _ arguments:ExpressionList _ ")" { return $arguments; };
+    IdentifierList = first:Identifier rest:(_ "," _ next:Identifier { return $next; })* { return array_merge([$first], $rest); };
+    ExpressionList = first:Expression rest:(_ "," _ next:Expression { return $next; })* { return array_merge([$first], $rest); };
+}
+

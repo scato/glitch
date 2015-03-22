@@ -90,50 +90,11 @@ class GlitchFileSpec extends ObjectBehavior
         );
     }
 
-    function it_should_parse_a_string_literal()
-    {
-        $this->parse('main ! "Hello, world!\\n";')->shouldBeLike(
-            $this->a_program_with([new StringNode('"Hello, world!\\n"')])
-        );
-    }
-
-    function it_should_parse_a_function_call_expression()
-    {
-        $this->parse('main ! strtoupper("Hello, world!\\n");')->shouldBeLike(
-            $this->a_program_with([new CallNode(new ReferenceNode('strtoupper'), [new StringNode('"Hello, world!\\n"')])])
-        );
-    }
-
     function it_should_parse_an_action_literal()
     {
         $this->parse('main ! args => { print ! args; };')->shouldBeLike(
             $this->a_program_with([new ActionNode(['args'], [
                 new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
-            ])])
-        );
-    }
-
-    function it_should_parse_a_function_literal()
-    {
-        $this->parse('main ! args -> args;')->shouldBeLike(
-            $this->a_program_with([new FunctionNode(['args'], new ReferenceNode('args'))])
-        );
-    }
-
-    function it_should_parse_an_action_literal_with_zero_parameters()
-    {
-        $this->parse('main ! () => { print ! ""; };')->shouldBeLike(
-            $this->a_program_with([new ActionNode([], [
-                new FireNode(new ReferenceNode('print'), [new StringNode('""')])
-            ])])
-        );
-    }
-
-    function it_should_parse_an_action_literal_with_multiple_parameters()
-    {
-        $this->parse('main ! (argc, argv) => { print ! argc; };')->shouldBeLike(
-            $this->a_program_with([new ActionNode(['argc', 'argv'], [
-                new FireNode(new ReferenceNode('print'), [new ReferenceNode('argc')])
             ])])
         );
     }

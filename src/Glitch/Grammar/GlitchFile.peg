@@ -11,7 +11,7 @@ use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
 
-grammar GlitchFile
+grammar GlitchFile extends GlitchExpression
 {
     start Program = statements:StatementList _ { return new ProgramNode($statements); };
     
@@ -25,31 +25,6 @@ grammar GlitchFile
               / left:Expression _ operator:EV_OP _ right:Expression _ ";" { return new EventListenerNode($left, $operator, $right); }
               / left:Expression _ FIRE _ right:ArgumentList _ ";" { return new FireNode($left, $right); };
 
-    Expression = ActionLiteral
-               / FunctionLiteral
-               / CallExpression
-               / PrimaryExpression;
-
-    PrimaryExpression = StringLiteral
-                      / ReferenceExpression;
-
-    ReferenceExpression = value:Identifier { return new ReferenceNode($value); };
-    CallExpression = left:PrimaryExpression _ "(" _ ")" { return new CallNode($left, []); }
-                   / left:PrimaryExpression _ "(" _ right:ExpressionList _ ")" { return new CallNode($left, $right); };
-    StringLiteral = value:$("\"" ([^\\"] / "\\" .)* "\"") { return new StringNode($value); };
-    ActionLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new ActionNode($parameters, $statements); };
-    FunctionLiteral = parameters:ParameterList _ "->" _ expression:Expression { return new FunctionNode($parameters, $expression); };
-
-    _ = [\r\t\n ]*;
-    Identifier = $([A-Za-z_] [A-Za-z0-9_]*);
     StatementList = (_ statement:Statement { return $statement; })*;
-    ParameterList = parameter:Identifier { return [$parameter]; }
-                  / "(" _ ")" { return []; }
-                  / "(" _ parameters:IdentifierList _ ")" { return $parameters; };
-    ArgumentList = argument:Expression { return [$argument]; }
-                 / "(" _ ")" { return []; }
-                 / "(" _ arguments:ExpressionList _ ")" { return $arguments; };
-    IdentifierList = first:Identifier rest:(_ "," _ next:Identifier { return $next; })* { return array_merge([$first], $rest); };
-    ExpressionList = first:Expression rest:(_ "," _ next:Expression { return $next; })* { return array_merge([$first], $rest); };
 }
 
