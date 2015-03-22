@@ -3,15 +3,14 @@
 namespace spec\Glitch\Grammar;
 
 use Glitch\Grammar\Tree\ActionNode;
-use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\AssignmentNode;
 use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\EventDefinitionNode;
+use Glitch\Grammar\Tree\EventListenerNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
-use Glitch\Grammar\Tree\RemoveListenerNode;
 use Glitch\Grammar\Tree\StringNode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -73,7 +72,7 @@ class GlitchFileSpec extends ObjectBehavior
     {
         $this->parse('main += args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
-                new AddListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
+                new EventListenerNode(new ReferenceNode('main'), "+=", new ActionNode(['args'], [
                     new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
                 ]))
             ])
@@ -84,7 +83,7 @@ class GlitchFileSpec extends ObjectBehavior
     {
         $this->parse('main -= args => { print ! args; };')->shouldBeLike(
             new ProgramNode([
-                new RemoveListenerNode(new ReferenceNode('main'), new ActionNode(['args'], [
+                new EventListenerNode(new ReferenceNode('main'), "-=", new ActionNode(['args'], [
                     new FireNode(new ReferenceNode('print'), [new ReferenceNode('args')])
                 ]))
             ])

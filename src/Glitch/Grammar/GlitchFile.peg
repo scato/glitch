@@ -1,32 +1,29 @@
 namespace Glitch\Grammar;
 
 use Glitch\Grammar\Tree\ActionNode;
-use Glitch\Grammar\Tree\AddListenerNode;
 use Glitch\Grammar\Tree\AssignmentNode;
 use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\EventDefinitionNode;
+use Glitch\Grammar\Tree\EventListenerNode;
 use Glitch\Grammar\Tree\FireNode;
 use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
-use Glitch\Grammar\Tree\RemoveListenerNode;
 use Glitch\Grammar\Tree\StringNode;
 
 grammar GlitchFile
 {
     start Program = statements:StatementList _ { return new ProgramNode($statements); };
     
-    Statement = EventDefinitionStatement
-              / AssignmentStatement
-              / FireStatement
-              / AddListenerStatement
-              / RemoveListenerStatement;
+    DEF_EV = "*";
+    ASSIGN = ":=";
+    EV_OP = "+=" / "-=";
+    FIRE = "!";
 
-    EventDefinitionStatement = "*" _ names:IdentifierList _ ";" { return new EventDefinitionNode($names); };
-    AssignmentStatement = left:Expression _ ":=" _ right:Expression _ ";" { return new AssignmentNode($left, $right); };
-    FireStatement = left:Expression _ "!" _ right:ArgumentList _ ";" { return new FireNode($left, $right); };
-    AddListenerStatement = left:Expression _ "+=" _ right:Expression _ ";" { return new AddListenerNode($left, $right); };
-    RemoveListenerStatement = left:Expression _ "-=" _ right:Expression _ ";" { return new RemoveListenerNode($left, $right); };
+    Statement = DEF_EV _ names:IdentifierList _ ";" { return new EventDefinitionNode($names); }
+              / left:Identifier _ ASSIGN _ right:Expression _ ";" { return new AssignmentNode($left, $right); }
+              / left:Expression _ operator:EV_OP _ right:Expression _ ";" { return new EventListenerNode($left, $operator, $right); }
+              / left:Expression _ FIRE _ right:ArgumentList _ ";" { return new FireNode($left, $right); };
 
     Expression = ActionLiteral
                / FunctionLiteral
