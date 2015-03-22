@@ -42,7 +42,7 @@ class GlitchFileSpec extends ObjectBehavior
     {
         $this->parse('args := "";')->shouldBeLike(
             new ProgramNode([
-                new AssignmentNode(new ReferenceNode('args'), new StringNode('""'))
+                new AssignmentNode('args', new StringNode('""'))
             ])
         );
     }
