@@ -4,7 +4,7 @@ namespace Glitch\Runtime;
 
 use Glitch\Grammar\Tree\ExpressionNode;
 
-class FunctionValue implements FunctionInterface
+class FunctionValue implements FunctionInterface, ValueInterface
 {
     private $parameters;
     private $expression;

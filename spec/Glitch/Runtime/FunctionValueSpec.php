@@ -22,7 +22,7 @@ class FunctionValueSpec extends ObjectBehavior
 
     function it_is_a_value()
     {
-        $this->shouldHaveType('Glitch\Runtime\FunctionValue');
+        $this->shouldHaveType('Glitch\Runtime\ValueInterface');
     }
 
     function it_should_reduce_its_expression_when_called(ExpressionNode $expression, ActivationObject $parentScope)
