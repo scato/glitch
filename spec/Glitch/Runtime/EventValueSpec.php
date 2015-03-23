@@ -51,16 +51,4 @@ class EventValueSpec extends ObjectBehavior
 
         $listener->fire($values)->shouldBeCalled();
     }
-
-    function it_fires_listeners_that_were_not_removed(EventValue $listener, EventValue $anotherOne)
-    {
-        $values = [new StringValue('test')];
-
-        $this->addListener($listener);
-        $this->addListener($anotherOne);
-        $this->removeListener($anotherOne);
-        $this->fire($values);
-
-        $listener->fire($values)->shouldBeCalled();
-    }
 }
