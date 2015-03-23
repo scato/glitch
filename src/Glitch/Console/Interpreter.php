@@ -23,13 +23,13 @@ class Interpreter
         $this->activationObjectFactory = $activationObjectFactory;
     }
 
-    public function run($filename, OutputInterface $output)
+    public function run($filename, $args, OutputInterface $output)
     {
         $contents = $this->filesystem->read($filename);
         $program = $this->grammar->parse($contents);
         $global = $this->activationObjectFactory->createActivationObject($output);
 
         $program->run($global);
-        $global->get('main')->fire([new StringValue('')]);
+        $global->get('main')->fire([new StringValue($args)]);
     }
 }
