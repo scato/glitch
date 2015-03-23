@@ -2,28 +2,28 @@
 
 namespace Glitch\Runtime;
 
-class ActionValue implements ActionInterface, ValueInterface
+use Glitch\Grammar\Tree\ExpressionNode;
+
+class FunctionValue implements FunctionInterface, ValueInterface
 {
     private $parameters;
-    private $statements;
+    private $expression;
     private $parentScope;
 
-    public function __construct(array $parameters, array $statements, ActivationObject $parentScope)
+    public function __construct(array $parameters, ExpressionNode $expression, ActivationObject $parentScope)
     {
         $this->parameters = $parameters;
-        $this->statements = $statements;
+        $this->expression = $expression;
         $this->parentScope = $parentScope;
     }
 
-    public function fire(array $values)
+    public function call(array $values)
     {
         $scope = new ActivationObject($this->parentScope);
         foreach ($this->parameters as $index => $parameter) {
             $scope->set($parameter, $values[$index]);
         }
 
-        foreach ($this->statements as $statement) {
-            $statement->invoke($scope);
-        }
+        return $this->expression->reduce($scope);
     }
 }

@@ -2,22 +2,22 @@
 
 namespace spec\Glitch\Runtime;
 
-use Glitch\Grammar\Tree\StatementNode;
+use Glitch\Grammar\Tree\ExpressionNode;
 use Glitch\Runtime\ActivationObject;
 use Glitch\Runtime\StringValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ActionValueSpec extends ObjectBehavior
+class FunctionValueSpec extends ObjectBehavior
 {
-    function let(StatementNode $statement, ActivationObject $parentScope)
+    function let(ExpressionNode $expression, ActivationObject $parentScope)
     {
-        $this->beConstructedWith(['x', 'y'], [$statement], $parentScope);
+        $this->beConstructedWith(['x', 'y'], $expression, $parentScope);
     }
     
-    function it_is_an_action()
+    function it_is_a_function()
     {
-        $this->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $this->shouldHaveType('Glitch\Runtime\FunctionInterface');
     }
 
     function it_is_a_value()
@@ -25,16 +25,16 @@ class ActionValueSpec extends ObjectBehavior
         $this->shouldHaveType('Glitch\Runtime\ValueInterface');
     }
 
-    function it_should_invoke_its_statements_when_fired(StatementNode $statement, ActivationObject $parentScope)
+    function it_should_reduce_its_expression_when_called(ExpressionNode $expression, ActivationObject $parentScope)
     {
         $values = [new StringValue('a'), new StringValue('b')];
 
-        $this->fire($values);
+        $this->call($values);
 
         $scope = new ActivationObject($parentScope->getWrappedObject());
         $scope->set('x', new StringValue('a'));
         $scope->set('y', new StringValue('b'));
 
-        $statement->invoke($scope)->shouldBeCalled();
+        $expression->reduce($scope)->shouldBeCalled();
     }
 }

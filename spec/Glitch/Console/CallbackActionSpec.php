@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CallbackEventSpec extends ObjectBehavior
+class CallbackActionSpec extends ObjectBehavior
 {
     function let(OutputInterface $output)
     {
@@ -26,7 +26,7 @@ class CallbackEventSpec extends ObjectBehavior
 
     function it_calls_the_callback_with_the_string_value(OutputInterface $output)
     {
-        $this->fire(new StringValue('test'));
+        $this->fire([new StringValue('test')]);
 
         $output->writeln('test')->shouldBeCalled();
     }

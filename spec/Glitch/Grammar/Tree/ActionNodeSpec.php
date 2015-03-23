@@ -2,16 +2,16 @@
 
 namespace spec\Glitch\Grammar\Tree;
 
-use Glitch\Grammar\Tree\FireNode;
+use Glitch\Grammar\Tree\StatementNode;
 use Glitch\Runtime\ActivationObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class ActionNodeSpec extends ObjectBehavior
 {
-    function let(FireNode $statement)
+    function let(StatementNode $statement)
     {
-        $this->beConstructedWith(['x'], [$statement]);
+        $this->beConstructedWith(['x', 'y'], [$statement]);
     }
 
     function it_is_an_expression()

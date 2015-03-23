@@ -4,7 +4,7 @@ namespace Glitch\Grammar\Tree;
 
 use Glitch\Runtime\ActivationObject;
 
-class FireNode implements StatementNode
+class CallNode implements ExpressionNode
 {
     protected $left;
     protected $right;
@@ -15,13 +15,13 @@ class FireNode implements StatementNode
         $this->right = $right;
     }
 
-    public function invoke(ActivationObject $scope)
+    public function reduce(ActivationObject $scope)
     {
         $left = $this->left->reduce($scope);
         $right = array_map(function (ExpressionNode $value) use ($scope) {
             return $value->reduce($scope);
         }, $this->right);
 
-        $left->fire($right);
+        return $left->call($right);
     }
 }

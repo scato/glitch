@@ -24,10 +24,10 @@ class EventValue implements ActionInterface, ValueInterface
         $this->listeners = $listeners;
     }
 
-    public function fire(ValueInterface $value)
+    public function fire(array $values)
     {
         foreach ($this->listeners as $listener) {
-            $listener->fire($value);
+            $listener->fire($values);
         }
     }
 }

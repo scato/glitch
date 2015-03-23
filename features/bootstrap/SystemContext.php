@@ -54,6 +54,27 @@ class SystemContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given I have an echo example
+     */
+    public function iHaveAnEchoExample()
+    {
+        file_put_contents($this->filename, 'main += args => { println ! args; };');
+    }
+
+    /**
+     * @When I run it with :args
+     */
+    public function iRunItWith($args)
+    {
+        $this->process = new Process("bin/glitch {$this->filename} {$args}");
+        $this->process->run();
+
+        if (!$this->process->isSuccessful()) {
+            throw new RuntimeException($this->process->getErrorOutput());
+        }
+    }
+
+    /**
      * @When I run it
      */
     public function iRunIt()
@@ -67,11 +88,11 @@ class SystemContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Then I should see the expected output
+     * @Then I should see :line
      */
-    public function iShouldSeeTheExpectedOutput()
+    public function iShouldSee($line)
     {
-        assert(var_export($this->process->getOutput(), true) . ' === "Hello, world!\n"');
+        assert(var_export($this->process->getOutput(), true) . ' === ' . var_export($line . "\n", true));
     }
 }
 

@@ -53,18 +53,34 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given I have an echo example
+     */
+    public function iHaveAnEchoExample()
+    {
+        $this->filesystem->read('example.g')->willReturn('main += args => { println ! args; };');
+    }
+
+    /**
      * @When I run it
      */
     public function iRunIt()
     {
-        $this->interpreter->run('example.g', $this->output->reveal());
+        $this->iRunItWith('');
     }
 
     /**
-     * @Then I should see the expected output
+     * @When I run it with :args
      */
-    public function iShouldSeeTheExpectedOutput()
+    public function iRunItWith($args)
     {
-        $this->output->writeln('Hello, world!')->shouldHaveBeenCalled();
+        $this->interpreter->run('example.g', $args, $this->output->reveal());
+    }
+
+    /**
+     * @Then I should see :line
+     */
+    public function iShouldSee($line)
+    {
+        $this->output->writeln($line)->shouldHaveBeenCalled();
     }
 }

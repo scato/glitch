@@ -4,6 +4,6 @@ namespace Glitch\Runtime;
 
 interface ActionInterface
 {
-    public function fire(ValueInterface $value);
+    public function fire(array $values);
 }
 

@@ -34,9 +34,9 @@ class InterpreterSpec extends ObjectBehavior
         $activationObjectFactory->createActivationObject($output)->willReturn($activationObject);
         $activationObject->get('main')->willReturn($main);
 
-        $this->run('example.g', $output);
+        $this->run('example.g', 'test', $output);
 
         $programNode->run($activationObject)->shouldBeCalled();
-        $main->fire(new StringValue(""))->shouldBeCalled();
+        $main->fire([new StringValue("test")])->shouldBeCalled();
     }
 }
