@@ -23,7 +23,7 @@ class InterpreterApplicationSpec extends ObjectBehavior
         $output = new NullOutput();
         $this->run($input, $output);
 
-        $interpreter->run(\getcwd() . '/doc/example.g', 'test', $output)->shouldBeCalled();
+        $interpreter->runFile(\getcwd() . '/doc/example.g', 'test', $output)->shouldBeCalled();
     }
 
     function it_should_run_the_interpreter_with_an_empty_args_by_default(Interpreter $interpreter)
@@ -32,6 +32,6 @@ class InterpreterApplicationSpec extends ObjectBehavior
         $output = new NullOutput();
         $this->run($input, $output);
 
-        $interpreter->run(\getcwd() . '/doc/example.g', '', $output)->shouldBeCalled();
+        $interpreter->runFile(\getcwd() . '/doc/example.g', '', $output)->shouldBeCalled();
     }
 }

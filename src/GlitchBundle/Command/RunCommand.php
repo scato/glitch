@@ -29,6 +29,6 @@ class RunCommand extends Command
     {
         $filename = $input->getArgument('filename');
         $realpath = realpath($filename);
-        $contents = $this->interpreter->run(realpath($filename), $input->getArgument('args'), $output);
+        $contents = $this->interpreter->runFile(realpath($filename), $input->getArgument('args'), $output);
     }
 }
