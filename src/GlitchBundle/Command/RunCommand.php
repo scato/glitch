@@ -28,7 +28,7 @@ class RunCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $filename = $input->getArgument('filename');
-        $realpath = realpath($filename);
-        $contents = $this->interpreter->runFile(realpath($filename), $input->getArgument('args'), $output);
+        $realpath = realpath(dirname($filename)) . '/' . basename($filename);
+        $contents = $this->interpreter->runFile($realpath, $input->getArgument('args'), $output);
     }
 }

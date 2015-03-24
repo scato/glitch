@@ -29,12 +29,12 @@ class InterpreterSpec extends ObjectBehavior
         EventValue $main,
         OutputInterface $output
     ) {
-        $filesystem->read('example.g')->willReturn('println ! "foo";');
+        $filesystem->read('/tmp/example.g')->willReturn('println ! "foo";');
         $grammar->parse('println ! "foo";')->willReturn($programNode);
         $activationObjectFactory->createActivationObject($output, $this)->willReturn($activationObject);
         $activationObject->get('main')->willReturn($main);
 
-        $this->runFile('example.g', 'test', $output);
+        $this->runFile('/tmp/example.g', 'test', $output);
 
         $programNode->run($activationObject)->shouldBeCalled();
         $main->fire([new StringValue("test")])->shouldBeCalled();
@@ -48,11 +48,12 @@ class InterpreterSpec extends ObjectBehavior
         ActivationObject $activationObject,
         OutputInterface $output
     ) {
-        $filesystem->read('stdlib.g')->willReturn('println ! "foo";');
+        $filesystem->read('/tmp/stdlib.g')->willReturn('println ! "foo";');
         $grammar->parse('println ! "foo";')->willReturn($programNode);
         $activationObjectFactory->createActivationObject($output, $this)->willReturn($activationObject);
 
         $this->init($output);
+        $this->enterFile('/tmp/example.g');
         $this->includeFile('stdlib.g');
 
         $programNode->run($activationObject)->shouldBeCalled();

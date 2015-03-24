@@ -19,19 +19,19 @@ class InterpreterApplicationSpec extends ObjectBehavior
 
     function it_should_run_the_interpreter(Interpreter $interpreter)
     {
-        $input = new StringInput('doc/example.g test');
+        $input = new StringInput('example.g test');
         $output = new NullOutput();
         $this->run($input, $output);
 
-        $interpreter->runFile(\getcwd() . '/doc/example.g', 'test', $output)->shouldBeCalled();
+        $interpreter->runFile(\getcwd() . '/example.g', 'test', $output)->shouldBeCalled();
     }
 
     function it_should_run_the_interpreter_with_an_empty_args_by_default(Interpreter $interpreter)
     {
-        $input = new StringInput('doc/example.g');
+        $input = new StringInput('example.g');
         $output = new NullOutput();
         $this->run($input, $output);
 
-        $interpreter->runFile(\getcwd() . '/doc/example.g', '', $output)->shouldBeCalled();
+        $interpreter->runFile(\getcwd() . '/example.g', '', $output)->shouldBeCalled();
     }
 }
