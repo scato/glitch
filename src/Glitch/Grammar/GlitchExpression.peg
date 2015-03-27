@@ -1,6 +1,7 @@
 namespace Glitch\Grammar;
 
 use Glitch\Grammar\Tree\ActionNode;
+use Glitch\Grammar\Tree\BinaryNode;
 use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ReferenceNode;
@@ -10,18 +11,39 @@ grammar GlitchExpression
 {
     start Expression = ActionLiteral
                      / FunctionLiteral
-                     / CallExpression
-                     / Terminal;
+                     / EqualityExpression;
+    
+    EQUALITY_OPERATOR = "===" / "!==";
+    EqualityExpression = left:RelationalExpression (
+                             _ operator:EQUALITY_OPERATOR _ right:RelationalExpression
+                             { $left = new BinaryNode($operator, $left, $right); }
+                         )* { return $left; };
+    
+    RELATIONAL_OPERATOR = "<" / ">";
+    RelationalExpression = left:AdditiveExpression (
+                               _ operator:RELATIONAL_OPERATOR _ right:AdditiveExpression
+                               { $left = new BinaryNode($operator, $left, $right); }
+                           )* { return $left; };
+    
+    ADDITIVE_OPERATOR = "+" / "-";
+    AdditiveExpression = left:MultiplicativeExpression (
+                               _ operator:ADDITIVE_OPERATOR _ right:MultiplicativeExpression
+                               { $left = new BinaryNode($operator, $left, $right); }
+                         )* { return $left; };
+    
+    MultiplicativeExpression = UnaryExpression;
+    UnaryExpression = PostfixExpression;
 
-    CallExpression = left:PrimaryExpression _ "(" _ ")" { return new CallNode($left, []); }
-                   / left:PrimaryExpression _ "(" _ right:ExpressionList _ ")" { return new CallNode($left, $right); };
+    PostfixExpression = left:PrimaryExpression (
+                            _ "(" _ ")" { $left = new CallNode($left, []); }
+                            / _ "(" _ right:ExpressionList _ ")" { $left = new CallNode($left, $right); }
+                        )* { return $left; };
+
     ActionLiteral = parameters:ParameterList _ "=>" _ "{" statements:StatementList _ "}" { return new ActionNode($parameters, $statements); };
     FunctionLiteral = parameters:ParameterList _ "->" _ expression:Expression { return new FunctionNode($parameters, $expression); };
 
-    PrimaryExpression = Terminal;
-
-    Terminal = StringLiteral
-             / Reference;
+    PrimaryExpression = StringLiteral
+                      / Reference;
 
     StringLiteral = value:$("\"" ([^\\"] / "\\" .)* "\"") { return new StringNode($value); };
     Reference = value:Identifier { return new ReferenceNode($value); };

@@ -4,6 +4,7 @@ namespace spec\Glitch\Grammar;
 
 use Glitch\Grammar\Tree\ActionNode;
 use Glitch\Grammar\Tree\AssignmentNode;
+use Glitch\Grammar\Tree\BinaryNode;
 use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\EventDefinitionNode;
 use Glitch\Grammar\Tree\EventListenerNode;
@@ -56,6 +57,27 @@ class GlitchExpressionSpec extends ObjectBehavior
     {
         $this->parse('(argc, argv) => { STATEMENTS }')->shouldBeLike(
             new ActionNode(['argc', 'argv'], [])
+        );
+    }
+
+    function it_should_parse_an_equality_expression()
+    {
+        $this->parse('a === b')->shouldBeLike(
+            new BinaryNode('===', new ReferenceNode('a'), new ReferenceNode('b'))
+        );
+    }
+
+    function it_should_parse_a_relational_expression()
+    {
+        $this->parse('a < b')->shouldBeLike(
+            new BinaryNode('<', new ReferenceNode('a'), new ReferenceNode('b'))
+        );
+    }
+
+    function it_should_parse_an_additive_expression()
+    {
+        $this->parse('a + b')->shouldBeLike(
+            new BinaryNode('+', new ReferenceNode('a'), new ReferenceNode('b'))
         );
     }
 }
