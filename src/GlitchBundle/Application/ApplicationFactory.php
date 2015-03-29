@@ -14,7 +14,7 @@ class ApplicationFactory
 
     private function createInterpreter()
     {
-        $adapter = new Adapter('/');
+        $adapter = new Adapter(\getcwd());
         $filesystem = new Filesystem($adapter);
         $grammar = new GlitchFile();
         $activationObjectFactory = new CliFactory();
