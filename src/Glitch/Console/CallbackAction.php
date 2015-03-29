@@ -18,10 +18,20 @@ class CallbackAction implements ActionInterface, ValueInterface
 
     public function fire(array $values)
     {
+        $backfire = null;
+
+        if (end($values) instanceof ActionInterface) {
+            $backfire = array_pop($values);
+        }
+
         $strings = array_map(function (StringValue $value) {
             return $value->toString();
         }, $values);
 
-        call_user_func_array($this->callback, $strings);
+        $result = call_user_func_array($this->callback, $strings);
+
+        if ($backfire !== null) {
+            $backfire->fire([new StringValue($result)]);
+        }
     }
 }

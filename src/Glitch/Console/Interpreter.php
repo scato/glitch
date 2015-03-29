@@ -27,14 +27,14 @@ class Interpreter
 
     public function runFile($filename, $args, OutputInterface $output)
     {
-        $this->init($output);
+        $this->init($output, $this->filesystem);
         $this->includeFile($filename);
         $this->global->get('main')->fire([new StringValue($args)]);
     }
 
-    public function init(OutputInterface $output)
+    public function init(OutputInterface $output, FilesystemInterface $filesystem)
     {
-        $this->global = $this->activationObjectFactory->createActivationObject($output, $this);
+        $this->global = $this->activationObjectFactory->createActivationObject($output, $this, $filesystem);
     }
 
     public function enterFile($filename)

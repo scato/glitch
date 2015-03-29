@@ -31,7 +31,7 @@ class InterpreterSpec extends ObjectBehavior
     ) {
         $filesystem->read('/tmp/example.g')->willReturn('println ! "foo";');
         $grammar->parse('println ! "foo";')->willReturn($programNode);
-        $activationObjectFactory->createActivationObject($output, $this)->willReturn($activationObject);
+        $activationObjectFactory->createActivationObject($output, $this, $filesystem)->willReturn($activationObject);
         $activationObject->get('main')->willReturn($main);
 
         $this->runFile('/tmp/example.g', 'test', $output);
@@ -50,9 +50,9 @@ class InterpreterSpec extends ObjectBehavior
     ) {
         $filesystem->read('/tmp/stdlib.g')->willReturn('println ! "foo";');
         $grammar->parse('println ! "foo";')->willReturn($programNode);
-        $activationObjectFactory->createActivationObject($output, $this)->willReturn($activationObject);
+        $activationObjectFactory->createActivationObject($output, $this, $filesystem)->willReturn($activationObject);
 
-        $this->init($output);
+        $this->init($output, $filesystem);
         $this->enterFile('/tmp/example.g');
         $this->includeFile('stdlib.g');
 
