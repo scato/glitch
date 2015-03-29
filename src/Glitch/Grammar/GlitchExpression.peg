@@ -6,12 +6,17 @@ use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
+use Glitch\Grammar\Tree\TernaryNode;
 
 grammar GlitchExpression
 {
     start Expression = ActionLiteral
                      / FunctionLiteral
-                     / EqualityExpression;
+                     / TernaryExpression;
+
+    TernaryExpression = first:EqualityExpression _ "?" _ second:Expression _ ":" _ third:Expression
+                        { return new TernaryNode($first, $second, $third); }
+                      / EqualityExpression;
     
     EQUALITY_OPERATOR = "===" / "!==";
     EqualityExpression = left:RelationalExpression (

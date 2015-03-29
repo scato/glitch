@@ -8,6 +8,7 @@ use Glitch\Grammar\Tree\CallNode;
 use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
+use Glitch\Grammar\Tree\TernaryNode;
 
 class GlitchExpression
 {
@@ -46,7 +47,7 @@ class GlitchExpression
         if (!$_success && !$this->cut) {
             $this->position = $_position1;
 
-            $_success = $this->parseEqualityExpression();
+            $_success = $this->parseTernaryExpression();
         }
 
         $this->cut = $_cut2;
@@ -64,6 +65,135 @@ class GlitchExpression
         return $_success;
     }
 
+    protected function parseTernaryExpression()
+    {
+        $_position = $this->position;
+
+        if (isset($this->cache['TernaryExpression'][$_position])) {
+            $_success = $this->cache['TernaryExpression'][$_position]['success'];
+            $this->position = $this->cache['TernaryExpression'][$_position]['position'];
+            $this->value = $this->cache['TernaryExpression'][$_position]['value'];
+
+            return $_success;
+        }
+
+        $_position4 = $this->position;
+        $_cut5 = $this->cut;
+
+        $this->cut = false;
+        $_value3 = array();
+
+        $_success = $this->parseEqualityExpression();
+
+        if ($_success) {
+            $first = $this->value;
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            if (substr($this->string, $this->position, strlen("?")) === "?") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("?"));
+                $this->position += strlen("?");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"?"');
+            }
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parseExpression();
+
+            if ($_success) {
+                $second = $this->value;
+            }
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            if (substr($this->string, $this->position, strlen(":")) === ":") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen(":"));
+                $this->position += strlen(":");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '":"');
+            }
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parse_();
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $_success = $this->parseExpression();
+
+            if ($_success) {
+                $third = $this->value;
+            }
+        }
+
+        if ($_success) {
+            $_value3[] = $this->value;
+
+            $this->value = $_value3;
+        }
+
+        if ($_success) {
+            $this->value = call_user_func(function () use (&$first, &$second, &$third) {
+                return new TernaryNode($first, $second, $third);
+            });
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position4;
+
+            $_success = $this->parseEqualityExpression();
+        }
+
+        $this->cut = $_cut5;
+
+        $this->cache['TernaryExpression'][$_position] = array(
+            'success' => $_success,
+            'position' => $this->position,
+            'value' => $this->value
+        );
+
+        if (!$_success) {
+            $this->report($_position, 'TernaryExpression');
+        }
+
+        return $_success;
+    }
+
     protected function parseEQUALITY_OPERATOR()
     {
         $_position = $this->position;
@@ -76,8 +206,8 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position3 = $this->position;
-        $_cut4 = $this->cut;
+        $_position6 = $this->position;
+        $_cut7 = $this->cut;
 
         $this->cut = false;
         if (substr($this->string, $this->position, strlen("===")) === "===") {
@@ -91,7 +221,7 @@ class GlitchExpression
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position3;
+            $this->position = $_position6;
 
             if (substr($this->string, $this->position, strlen("!==")) === "!==") {
                 $_success = true;
@@ -104,7 +234,7 @@ class GlitchExpression
             }
         }
 
-        $this->cut = $_cut4;
+        $this->cut = $_cut7;
 
         $this->cache['EQUALITY_OPERATOR'][$_position] = array(
             'success' => $_success,
@@ -131,7 +261,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value9 = array();
+        $_value12 = array();
 
         $_success = $this->parseRelationalExpression();
 
@@ -140,21 +270,21 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value9[] = $this->value;
+            $_value12[] = $this->value;
 
-            $_value7 = array();
-            $_cut8 = $this->cut;
+            $_value10 = array();
+            $_cut11 = $this->cut;
 
             while (true) {
-                $_position6 = $this->position;
+                $_position9 = $this->position;
 
                 $this->cut = false;
-                $_value5 = array();
+                $_value8 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value5[] = $this->value;
+                    $_value8[] = $this->value;
 
                     $_success = $this->parseEQUALITY_OPERATOR();
 
@@ -164,13 +294,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value5[] = $this->value;
+                    $_value8[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value5[] = $this->value;
+                    $_value8[] = $this->value;
 
                     $_success = $this->parseRelationalExpression();
 
@@ -180,9 +310,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value5[] = $this->value;
+                    $_value8[] = $this->value;
 
-                    $this->value = $_value5;
+                    $this->value = $_value8;
                 }
 
                 if ($_success) {
@@ -195,22 +325,22 @@ class GlitchExpression
                     break;
                 }
 
-                $_value7[] = $this->value;
+                $_value10[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position6;
-                $this->value = $_value7;
+                $this->position = $_position9;
+                $this->value = $_value10;
             }
 
-            $this->cut = $_cut8;
+            $this->cut = $_cut11;
         }
 
         if ($_success) {
-            $_value9[] = $this->value;
+            $_value12[] = $this->value;
 
-            $this->value = $_value9;
+            $this->value = $_value12;
         }
 
         if ($_success) {
@@ -244,8 +374,8 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position10 = $this->position;
-        $_cut11 = $this->cut;
+        $_position13 = $this->position;
+        $_cut14 = $this->cut;
 
         $this->cut = false;
         if (substr($this->string, $this->position, strlen("<")) === "<") {
@@ -259,7 +389,7 @@ class GlitchExpression
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position10;
+            $this->position = $_position13;
 
             if (substr($this->string, $this->position, strlen(">")) === ">") {
                 $_success = true;
@@ -272,7 +402,7 @@ class GlitchExpression
             }
         }
 
-        $this->cut = $_cut11;
+        $this->cut = $_cut14;
 
         $this->cache['RELATIONAL_OPERATOR'][$_position] = array(
             'success' => $_success,
@@ -299,7 +429,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value16 = array();
+        $_value19 = array();
 
         $_success = $this->parseAdditiveExpression();
 
@@ -308,21 +438,21 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value16[] = $this->value;
+            $_value19[] = $this->value;
 
-            $_value14 = array();
-            $_cut15 = $this->cut;
+            $_value17 = array();
+            $_cut18 = $this->cut;
 
             while (true) {
-                $_position13 = $this->position;
+                $_position16 = $this->position;
 
                 $this->cut = false;
-                $_value12 = array();
+                $_value15 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value12[] = $this->value;
+                    $_value15[] = $this->value;
 
                     $_success = $this->parseRELATIONAL_OPERATOR();
 
@@ -332,13 +462,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value12[] = $this->value;
+                    $_value15[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value12[] = $this->value;
+                    $_value15[] = $this->value;
 
                     $_success = $this->parseAdditiveExpression();
 
@@ -348,9 +478,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value12[] = $this->value;
+                    $_value15[] = $this->value;
 
-                    $this->value = $_value12;
+                    $this->value = $_value15;
                 }
 
                 if ($_success) {
@@ -363,22 +493,22 @@ class GlitchExpression
                     break;
                 }
 
-                $_value14[] = $this->value;
+                $_value17[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position13;
-                $this->value = $_value14;
+                $this->position = $_position16;
+                $this->value = $_value17;
             }
 
-            $this->cut = $_cut15;
+            $this->cut = $_cut18;
         }
 
         if ($_success) {
-            $_value16[] = $this->value;
+            $_value19[] = $this->value;
 
-            $this->value = $_value16;
+            $this->value = $_value19;
         }
 
         if ($_success) {
@@ -412,8 +542,8 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position17 = $this->position;
-        $_cut18 = $this->cut;
+        $_position20 = $this->position;
+        $_cut21 = $this->cut;
 
         $this->cut = false;
         if (substr($this->string, $this->position, strlen("+")) === "+") {
@@ -427,7 +557,7 @@ class GlitchExpression
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position17;
+            $this->position = $_position20;
 
             if (substr($this->string, $this->position, strlen("-")) === "-") {
                 $_success = true;
@@ -440,7 +570,7 @@ class GlitchExpression
             }
         }
 
-        $this->cut = $_cut18;
+        $this->cut = $_cut21;
 
         $this->cache['ADDITIVE_OPERATOR'][$_position] = array(
             'success' => $_success,
@@ -467,7 +597,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value23 = array();
+        $_value26 = array();
 
         $_success = $this->parseMultiplicativeExpression();
 
@@ -476,21 +606,21 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value23[] = $this->value;
+            $_value26[] = $this->value;
 
-            $_value21 = array();
-            $_cut22 = $this->cut;
+            $_value24 = array();
+            $_cut25 = $this->cut;
 
             while (true) {
-                $_position20 = $this->position;
+                $_position23 = $this->position;
 
                 $this->cut = false;
-                $_value19 = array();
+                $_value22 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value19[] = $this->value;
+                    $_value22[] = $this->value;
 
                     $_success = $this->parseADDITIVE_OPERATOR();
 
@@ -500,13 +630,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value19[] = $this->value;
+                    $_value22[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value19[] = $this->value;
+                    $_value22[] = $this->value;
 
                     $_success = $this->parseMultiplicativeExpression();
 
@@ -516,9 +646,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value19[] = $this->value;
+                    $_value22[] = $this->value;
 
-                    $this->value = $_value19;
+                    $this->value = $_value22;
                 }
 
                 if ($_success) {
@@ -531,22 +661,22 @@ class GlitchExpression
                     break;
                 }
 
-                $_value21[] = $this->value;
+                $_value24[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position20;
-                $this->value = $_value21;
+                $this->position = $_position23;
+                $this->value = $_value24;
             }
 
-            $this->cut = $_cut22;
+            $this->cut = $_cut25;
         }
 
         if ($_success) {
-            $_value23[] = $this->value;
+            $_value26[] = $this->value;
 
-            $this->value = $_value23;
+            $this->value = $_value26;
         }
 
         if ($_success) {
@@ -634,7 +764,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value31 = array();
+        $_value34 = array();
 
         $_success = $this->parsePrimaryExpression();
 
@@ -643,25 +773,25 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value31[] = $this->value;
+            $_value34[] = $this->value;
 
-            $_value29 = array();
-            $_cut30 = $this->cut;
+            $_value32 = array();
+            $_cut33 = $this->cut;
 
             while (true) {
-                $_position28 = $this->position;
+                $_position31 = $this->position;
 
                 $this->cut = false;
-                $_position26 = $this->position;
-                $_cut27 = $this->cut;
+                $_position29 = $this->position;
+                $_cut30 = $this->cut;
 
                 $this->cut = false;
-                $_value24 = array();
+                $_value27 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value24[] = $this->value;
+                    $_value27[] = $this->value;
 
                     if (substr($this->string, $this->position, strlen("(")) === "(") {
                         $_success = true;
@@ -675,13 +805,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value24[] = $this->value;
+                    $_value27[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value24[] = $this->value;
+                    $_value27[] = $this->value;
 
                     if (substr($this->string, $this->position, strlen(")")) === ")") {
                         $_success = true;
@@ -695,9 +825,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value24[] = $this->value;
+                    $_value27[] = $this->value;
 
-                    $this->value = $_value24;
+                    $this->value = $_value27;
                 }
 
                 if ($_success) {
@@ -707,14 +837,14 @@ class GlitchExpression
                 }
 
                 if (!$_success && !$this->cut) {
-                    $this->position = $_position26;
+                    $this->position = $_position29;
 
-                    $_value25 = array();
+                    $_value28 = array();
 
                     $_success = $this->parse_();
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
                         if (substr($this->string, $this->position, strlen("(")) === "(") {
                             $_success = true;
@@ -728,13 +858,13 @@ class GlitchExpression
                     }
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
                         $_success = $this->parse_();
                     }
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
                         $_success = $this->parseExpressionList();
 
@@ -744,13 +874,13 @@ class GlitchExpression
                     }
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
                         $_success = $this->parse_();
                     }
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
                         if (substr($this->string, $this->position, strlen(")")) === ")") {
                             $_success = true;
@@ -764,9 +894,9 @@ class GlitchExpression
                     }
 
                     if ($_success) {
-                        $_value25[] = $this->value;
+                        $_value28[] = $this->value;
 
-                        $this->value = $_value25;
+                        $this->value = $_value28;
                     }
 
                     if ($_success) {
@@ -776,28 +906,28 @@ class GlitchExpression
                     }
                 }
 
-                $this->cut = $_cut27;
+                $this->cut = $_cut30;
 
                 if (!$_success) {
                     break;
                 }
 
-                $_value29[] = $this->value;
+                $_value32[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position28;
-                $this->value = $_value29;
+                $this->position = $_position31;
+                $this->value = $_value32;
             }
 
-            $this->cut = $_cut30;
+            $this->cut = $_cut33;
         }
 
         if ($_success) {
-            $_value31[] = $this->value;
+            $_value34[] = $this->value;
 
-            $this->value = $_value31;
+            $this->value = $_value34;
         }
 
         if ($_success) {
@@ -831,7 +961,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value32 = array();
+        $_value35 = array();
 
         $_success = $this->parseParameterList();
 
@@ -840,13 +970,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("=>")) === "=>") {
                 $_success = true;
@@ -860,13 +990,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("{")) === "{") {
                 $_success = true;
@@ -880,7 +1010,7 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             $_success = $this->parseStatementList();
 
@@ -890,13 +1020,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("}")) === "}") {
                 $_success = true;
@@ -910,9 +1040,9 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value32[] = $this->value;
+            $_value35[] = $this->value;
 
-            $this->value = $_value32;
+            $this->value = $_value35;
         }
 
         if ($_success) {
@@ -946,7 +1076,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value33 = array();
+        $_value36 = array();
 
         $_success = $this->parseParameterList();
 
@@ -955,13 +1085,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value33[] = $this->value;
+            $_value36[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value33[] = $this->value;
+            $_value36[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("->")) === "->") {
                 $_success = true;
@@ -975,13 +1105,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value33[] = $this->value;
+            $_value36[] = $this->value;
 
             $_success = $this->parse_();
         }
 
         if ($_success) {
-            $_value33[] = $this->value;
+            $_value36[] = $this->value;
 
             $_success = $this->parseExpression();
 
@@ -991,9 +1121,9 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value33[] = $this->value;
+            $_value36[] = $this->value;
 
-            $this->value = $_value33;
+            $this->value = $_value36;
         }
 
         if ($_success) {
@@ -1027,19 +1157,19 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position34 = $this->position;
-        $_cut35 = $this->cut;
+        $_position37 = $this->position;
+        $_cut38 = $this->cut;
 
         $this->cut = false;
         $_success = $this->parseStringLiteral();
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position34;
+            $this->position = $_position37;
 
             $_success = $this->parseReference();
         }
 
-        $this->cut = $_cut35;
+        $this->cut = $_cut38;
 
         $this->cache['PrimaryExpression'][$_position] = array(
             'success' => $_success,
@@ -1066,9 +1196,9 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position43 = $this->position;
+        $_position46 = $this->position;
 
-        $_value42 = array();
+        $_value45 = array();
 
         if (substr($this->string, $this->position, strlen("\"")) === "\"") {
             $_success = true;
@@ -1081,17 +1211,17 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value42[] = $this->value;
+            $_value45[] = $this->value;
 
-            $_value40 = array();
-            $_cut41 = $this->cut;
+            $_value43 = array();
+            $_cut44 = $this->cut;
 
             while (true) {
-                $_position39 = $this->position;
+                $_position42 = $this->position;
 
                 $this->cut = false;
-                $_position37 = $this->position;
-                $_cut38 = $this->cut;
+                $_position40 = $this->position;
+                $_cut41 = $this->cut;
 
                 $this->cut = false;
                 if (preg_match('/^[^\\\\"]$/', substr($this->string, $this->position, 1))) {
@@ -1103,9 +1233,9 @@ class GlitchExpression
                 }
 
                 if (!$_success && !$this->cut) {
-                    $this->position = $_position37;
+                    $this->position = $_position40;
 
-                    $_value36 = array();
+                    $_value39 = array();
 
                     if (substr($this->string, $this->position, strlen("\\")) === "\\") {
                         $_success = true;
@@ -1118,7 +1248,7 @@ class GlitchExpression
                     }
 
                     if ($_success) {
-                        $_value36[] = $this->value;
+                        $_value39[] = $this->value;
 
                         if ($this->position < strlen($this->string)) {
                             $_success = true;
@@ -1130,32 +1260,32 @@ class GlitchExpression
                     }
 
                     if ($_success) {
-                        $_value36[] = $this->value;
+                        $_value39[] = $this->value;
 
-                        $this->value = $_value36;
+                        $this->value = $_value39;
                     }
                 }
 
-                $this->cut = $_cut38;
+                $this->cut = $_cut41;
 
                 if (!$_success) {
                     break;
                 }
 
-                $_value40[] = $this->value;
+                $_value43[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position39;
-                $this->value = $_value40;
+                $this->position = $_position42;
+                $this->value = $_value43;
             }
 
-            $this->cut = $_cut41;
+            $this->cut = $_cut44;
         }
 
         if ($_success) {
-            $_value42[] = $this->value;
+            $_value45[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("\"")) === "\"") {
                 $_success = true;
@@ -1169,13 +1299,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value42[] = $this->value;
+            $_value45[] = $this->value;
 
-            $this->value = $_value42;
+            $this->value = $_value45;
         }
 
         if ($_success) {
-            $this->value = strval(substr($this->string, $_position43, $this->position - $_position43));
+            $this->value = strval(substr($this->string, $_position46, $this->position - $_position46));
         }
 
         if ($_success) {
@@ -1250,11 +1380,11 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value45 = array();
-        $_cut46 = $this->cut;
+        $_value48 = array();
+        $_cut49 = $this->cut;
 
         while (true) {
-            $_position44 = $this->position;
+            $_position47 = $this->position;
 
             $this->cut = false;
             if (preg_match('/^[\\r\\t\\n ]$/', substr($this->string, $this->position, 1))) {
@@ -1269,16 +1399,16 @@ class GlitchExpression
                 break;
             }
 
-            $_value45[] = $this->value;
+            $_value48[] = $this->value;
         }
 
         if (!$this->cut) {
             $_success = true;
-            $this->position = $_position44;
-            $this->value = $_value45;
+            $this->position = $_position47;
+            $this->value = $_value48;
         }
 
-        $this->cut = $_cut46;
+        $this->cut = $_cut49;
 
         $this->cache['_'][$_position] = array(
             'success' => $_success,
@@ -1305,9 +1435,9 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position51 = $this->position;
+        $_position54 = $this->position;
 
-        $_value50 = array();
+        $_value53 = array();
 
         if (preg_match('/^[A-Za-z_]$/', substr($this->string, $this->position, 1))) {
             $_success = true;
@@ -1318,13 +1448,13 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value50[] = $this->value;
+            $_value53[] = $this->value;
 
-            $_value48 = array();
-            $_cut49 = $this->cut;
+            $_value51 = array();
+            $_cut52 = $this->cut;
 
             while (true) {
-                $_position47 = $this->position;
+                $_position50 = $this->position;
 
                 $this->cut = false;
                 if (preg_match('/^[A-Za-z0-9_]$/', substr($this->string, $this->position, 1))) {
@@ -1339,26 +1469,26 @@ class GlitchExpression
                     break;
                 }
 
-                $_value48[] = $this->value;
+                $_value51[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position47;
-                $this->value = $_value48;
+                $this->position = $_position50;
+                $this->value = $_value51;
             }
 
-            $this->cut = $_cut49;
+            $this->cut = $_cut52;
         }
 
         if ($_success) {
-            $_value50[] = $this->value;
+            $_value53[] = $this->value;
 
-            $this->value = $_value50;
+            $this->value = $_value53;
         }
 
         if ($_success) {
-            $this->value = strval(substr($this->string, $_position51, $this->position - $_position51));
+            $this->value = strval(substr($this->string, $_position54, $this->position - $_position54));
         }
 
         $this->cache['Identifier'][$_position] = array(
@@ -1386,12 +1516,12 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value52 = array();
+        $_value55 = array();
 
         $_success = $this->parse_();
 
         if ($_success) {
-            $_value52[] = $this->value;
+            $_value55[] = $this->value;
 
             if (substr($this->string, $this->position, strlen("STATEMENTS")) === "STATEMENTS") {
                 $_success = true;
@@ -1405,9 +1535,9 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value52[] = $this->value;
+            $_value55[] = $this->value;
 
-            $this->value = $_value52;
+            $this->value = $_value55;
         }
 
         if ($_success) {
@@ -1441,8 +1571,8 @@ class GlitchExpression
             return $_success;
         }
 
-        $_position55 = $this->position;
-        $_cut56 = $this->cut;
+        $_position58 = $this->position;
+        $_cut59 = $this->cut;
 
         $this->cut = false;
         $_success = $this->parseIdentifier();
@@ -1458,9 +1588,9 @@ class GlitchExpression
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position55;
+            $this->position = $_position58;
 
-            $_value53 = array();
+            $_value56 = array();
 
             if (substr($this->string, $this->position, strlen("(")) === "(") {
                 $_success = true;
@@ -1473,13 +1603,13 @@ class GlitchExpression
             }
 
             if ($_success) {
-                $_value53[] = $this->value;
+                $_value56[] = $this->value;
 
                 $_success = $this->parse_();
             }
 
             if ($_success) {
-                $_value53[] = $this->value;
+                $_value56[] = $this->value;
 
                 if (substr($this->string, $this->position, strlen(")")) === ")") {
                     $_success = true;
@@ -1493,9 +1623,9 @@ class GlitchExpression
             }
 
             if ($_success) {
-                $_value53[] = $this->value;
+                $_value56[] = $this->value;
 
-                $this->value = $_value53;
+                $this->value = $_value56;
             }
 
             if ($_success) {
@@ -1506,114 +1636,7 @@ class GlitchExpression
         }
 
         if (!$_success && !$this->cut) {
-            $this->position = $_position55;
-
-            $_value54 = array();
-
-            if (substr($this->string, $this->position, strlen("(")) === "(") {
-                $_success = true;
-                $this->value = substr($this->string, $this->position, strlen("("));
-                $this->position += strlen("(");
-            } else {
-                $_success = false;
-
-                $this->report($this->position, '"("');
-            }
-
-            if ($_success) {
-                $_value54[] = $this->value;
-
-                $_success = $this->parse_();
-            }
-
-            if ($_success) {
-                $_value54[] = $this->value;
-
-                $_success = $this->parseIdentifierList();
-
-                if ($_success) {
-                    $parameters = $this->value;
-                }
-            }
-
-            if ($_success) {
-                $_value54[] = $this->value;
-
-                $_success = $this->parse_();
-            }
-
-            if ($_success) {
-                $_value54[] = $this->value;
-
-                if (substr($this->string, $this->position, strlen(")")) === ")") {
-                    $_success = true;
-                    $this->value = substr($this->string, $this->position, strlen(")"));
-                    $this->position += strlen(")");
-                } else {
-                    $_success = false;
-
-                    $this->report($this->position, '")"');
-                }
-            }
-
-            if ($_success) {
-                $_value54[] = $this->value;
-
-                $this->value = $_value54;
-            }
-
-            if ($_success) {
-                $this->value = call_user_func(function () use (&$parameter, &$parameters) {
-                    return $parameters;
-                });
-            }
-        }
-
-        $this->cut = $_cut56;
-
-        $this->cache['ParameterList'][$_position] = array(
-            'success' => $_success,
-            'position' => $this->position,
-            'value' => $this->value
-        );
-
-        if (!$_success) {
-            $this->report($_position, 'ParameterList');
-        }
-
-        return $_success;
-    }
-
-    protected function parseArgumentList()
-    {
-        $_position = $this->position;
-
-        if (isset($this->cache['ArgumentList'][$_position])) {
-            $_success = $this->cache['ArgumentList'][$_position]['success'];
-            $this->position = $this->cache['ArgumentList'][$_position]['position'];
-            $this->value = $this->cache['ArgumentList'][$_position]['value'];
-
-            return $_success;
-        }
-
-        $_position59 = $this->position;
-        $_cut60 = $this->cut;
-
-        $this->cut = false;
-        $_success = $this->parseExpression();
-
-        if ($_success) {
-            $argument = $this->value;
-        }
-
-        if ($_success) {
-            $this->value = call_user_func(function () use (&$argument) {
-                return [$argument];
-            });
-        }
-
-        if (!$_success && !$this->cut) {
-            $this->position = $_position59;
+            $this->position = $_position58;
 
             $_value57 = array();
 
@@ -1625,6 +1648,22 @@ class GlitchExpression
                 $_success = false;
 
                 $this->report($this->position, '"("');
+            }
+
+            if ($_success) {
+                $_value57[] = $this->value;
+
+                $_success = $this->parse_();
+            }
+
+            if ($_success) {
+                $_value57[] = $this->value;
+
+                $_success = $this->parseIdentifierList();
+
+                if ($_success) {
+                    $parameters = $this->value;
+                }
             }
 
             if ($_success) {
@@ -1654,16 +1693,59 @@ class GlitchExpression
             }
 
             if ($_success) {
-                $this->value = call_user_func(function () use (&$argument) {
-                    return [];
+                $this->value = call_user_func(function () use (&$parameter, &$parameters) {
+                    return $parameters;
                 });
             }
         }
 
-        if (!$_success && !$this->cut) {
-            $this->position = $_position59;
+        $this->cut = $_cut59;
 
-            $_value58 = array();
+        $this->cache['ParameterList'][$_position] = array(
+            'success' => $_success,
+            'position' => $this->position,
+            'value' => $this->value
+        );
+
+        if (!$_success) {
+            $this->report($_position, 'ParameterList');
+        }
+
+        return $_success;
+    }
+
+    protected function parseArgumentList()
+    {
+        $_position = $this->position;
+
+        if (isset($this->cache['ArgumentList'][$_position])) {
+            $_success = $this->cache['ArgumentList'][$_position]['success'];
+            $this->position = $this->cache['ArgumentList'][$_position]['position'];
+            $this->value = $this->cache['ArgumentList'][$_position]['value'];
+
+            return $_success;
+        }
+
+        $_position62 = $this->position;
+        $_cut63 = $this->cut;
+
+        $this->cut = false;
+        $_success = $this->parseExpression();
+
+        if ($_success) {
+            $argument = $this->value;
+        }
+
+        if ($_success) {
+            $this->value = call_user_func(function () use (&$argument) {
+                return [$argument];
+            });
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position62;
+
+            $_value60 = array();
 
             if (substr($this->string, $this->position, strlen("(")) === "(") {
                 $_success = true;
@@ -1676,29 +1758,13 @@ class GlitchExpression
             }
 
             if ($_success) {
-                $_value58[] = $this->value;
+                $_value60[] = $this->value;
 
                 $_success = $this->parse_();
             }
 
             if ($_success) {
-                $_value58[] = $this->value;
-
-                $_success = $this->parseExpressionList();
-
-                if ($_success) {
-                    $arguments = $this->value;
-                }
-            }
-
-            if ($_success) {
-                $_value58[] = $this->value;
-
-                $_success = $this->parse_();
-            }
-
-            if ($_success) {
-                $_value58[] = $this->value;
+                $_value60[] = $this->value;
 
                 if (substr($this->string, $this->position, strlen(")")) === ")") {
                     $_success = true;
@@ -1712,9 +1778,73 @@ class GlitchExpression
             }
 
             if ($_success) {
-                $_value58[] = $this->value;
+                $_value60[] = $this->value;
 
-                $this->value = $_value58;
+                $this->value = $_value60;
+            }
+
+            if ($_success) {
+                $this->value = call_user_func(function () use (&$argument) {
+                    return [];
+                });
+            }
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position62;
+
+            $_value61 = array();
+
+            if (substr($this->string, $this->position, strlen("(")) === "(") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("("));
+                $this->position += strlen("(");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"("');
+            }
+
+            if ($_success) {
+                $_value61[] = $this->value;
+
+                $_success = $this->parse_();
+            }
+
+            if ($_success) {
+                $_value61[] = $this->value;
+
+                $_success = $this->parseExpressionList();
+
+                if ($_success) {
+                    $arguments = $this->value;
+                }
+            }
+
+            if ($_success) {
+                $_value61[] = $this->value;
+
+                $_success = $this->parse_();
+            }
+
+            if ($_success) {
+                $_value61[] = $this->value;
+
+                if (substr($this->string, $this->position, strlen(")")) === ")") {
+                    $_success = true;
+                    $this->value = substr($this->string, $this->position, strlen(")"));
+                    $this->position += strlen(")");
+                } else {
+                    $_success = false;
+
+                    $this->report($this->position, '")"');
+                }
+            }
+
+            if ($_success) {
+                $_value61[] = $this->value;
+
+                $this->value = $_value61;
             }
 
             if ($_success) {
@@ -1724,7 +1854,7 @@ class GlitchExpression
             }
         }
 
-        $this->cut = $_cut60;
+        $this->cut = $_cut63;
 
         $this->cache['ArgumentList'][$_position] = array(
             'success' => $_success,
@@ -1751,7 +1881,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value65 = array();
+        $_value68 = array();
 
         $_success = $this->parseIdentifier();
 
@@ -1760,21 +1890,21 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value65[] = $this->value;
+            $_value68[] = $this->value;
 
-            $_value63 = array();
-            $_cut64 = $this->cut;
+            $_value66 = array();
+            $_cut67 = $this->cut;
 
             while (true) {
-                $_position62 = $this->position;
+                $_position65 = $this->position;
 
                 $this->cut = false;
-                $_value61 = array();
+                $_value64 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value61[] = $this->value;
+                    $_value64[] = $this->value;
 
                     if (substr($this->string, $this->position, strlen(",")) === ",") {
                         $_success = true;
@@ -1788,13 +1918,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value61[] = $this->value;
+                    $_value64[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value61[] = $this->value;
+                    $_value64[] = $this->value;
 
                     $_success = $this->parseIdentifier();
 
@@ -1804,9 +1934,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value61[] = $this->value;
+                    $_value64[] = $this->value;
 
-                    $this->value = $_value61;
+                    $this->value = $_value64;
                 }
 
                 if ($_success) {
@@ -1819,16 +1949,16 @@ class GlitchExpression
                     break;
                 }
 
-                $_value63[] = $this->value;
+                $_value66[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position62;
-                $this->value = $_value63;
+                $this->position = $_position65;
+                $this->value = $_value66;
             }
 
-            $this->cut = $_cut64;
+            $this->cut = $_cut67;
 
             if ($_success) {
                 $rest = $this->value;
@@ -1836,9 +1966,9 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value65[] = $this->value;
+            $_value68[] = $this->value;
 
-            $this->value = $_value65;
+            $this->value = $_value68;
         }
 
         if ($_success) {
@@ -1872,7 +2002,7 @@ class GlitchExpression
             return $_success;
         }
 
-        $_value70 = array();
+        $_value73 = array();
 
         $_success = $this->parseExpression();
 
@@ -1881,21 +2011,21 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value70[] = $this->value;
+            $_value73[] = $this->value;
 
-            $_value68 = array();
-            $_cut69 = $this->cut;
+            $_value71 = array();
+            $_cut72 = $this->cut;
 
             while (true) {
-                $_position67 = $this->position;
+                $_position70 = $this->position;
 
                 $this->cut = false;
-                $_value66 = array();
+                $_value69 = array();
 
                 $_success = $this->parse_();
 
                 if ($_success) {
-                    $_value66[] = $this->value;
+                    $_value69[] = $this->value;
 
                     if (substr($this->string, $this->position, strlen(",")) === ",") {
                         $_success = true;
@@ -1909,13 +2039,13 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value66[] = $this->value;
+                    $_value69[] = $this->value;
 
                     $_success = $this->parse_();
                 }
 
                 if ($_success) {
-                    $_value66[] = $this->value;
+                    $_value69[] = $this->value;
 
                     $_success = $this->parseExpression();
 
@@ -1925,9 +2055,9 @@ class GlitchExpression
                 }
 
                 if ($_success) {
-                    $_value66[] = $this->value;
+                    $_value69[] = $this->value;
 
-                    $this->value = $_value66;
+                    $this->value = $_value69;
                 }
 
                 if ($_success) {
@@ -1940,16 +2070,16 @@ class GlitchExpression
                     break;
                 }
 
-                $_value68[] = $this->value;
+                $_value71[] = $this->value;
             }
 
             if (!$this->cut) {
                 $_success = true;
-                $this->position = $_position67;
-                $this->value = $_value68;
+                $this->position = $_position70;
+                $this->value = $_value71;
             }
 
-            $this->cut = $_cut69;
+            $this->cut = $_cut72;
 
             if ($_success) {
                 $rest = $this->value;
@@ -1957,9 +2087,9 @@ class GlitchExpression
         }
 
         if ($_success) {
-            $_value70[] = $this->value;
+            $_value73[] = $this->value;
 
-            $this->value = $_value70;
+            $this->value = $_value73;
         }
 
         if ($_success) {

@@ -13,6 +13,7 @@ use Glitch\Grammar\Tree\FunctionNode;
 use Glitch\Grammar\Tree\ProgramNode;
 use Glitch\Grammar\Tree\ReferenceNode;
 use Glitch\Grammar\Tree\StringNode;
+use Glitch\Grammar\Tree\TernaryNode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -57,6 +58,13 @@ class GlitchExpressionSpec extends ObjectBehavior
     {
         $this->parse('(argc, argv) => { STATEMENTS }')->shouldBeLike(
             new ActionNode(['argc', 'argv'], [])
+        );
+    }
+
+    function it_should_parse_a_ternary_expression()
+    {
+        $this->parse('a ? b : c')->shouldBeLike(
+            new TernaryNode(new ReferenceNode('a'), new ReferenceNode('b'), new ReferenceNode('c'))
         );
     }
 
