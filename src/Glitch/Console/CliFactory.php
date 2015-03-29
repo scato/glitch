@@ -29,6 +29,11 @@ class CliFactory
         return new CallbackAction(array($filesystem, 'read'));
     }
 
+    private function createStrposFunction()
+    {
+        return new CallbackFunction('strpos');
+    }
+
     public function createActivationObject(
         OutputInterface $output,
         Interpreter $interpreter,
@@ -40,6 +45,7 @@ class CliFactory
         $activationObject->set('println', $this->createPrintlnAction($output));
         $activationObject->set('include', $this->createIncludeAction($interpreter));
         $activationObject->set('file_get_contents', $this->createFileGetContentsAction($filesystem));
+        $activationObject->set('strpos', $this->createStrposFunction());
 
         return $activationObject;
     }

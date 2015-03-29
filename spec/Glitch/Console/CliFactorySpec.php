@@ -19,39 +19,35 @@ class CliFactorySpec extends ObjectBehavior
              ->shouldHaveType('Glitch\Runtime\ActivationObject');
     }
     
-    function it_creates_a_main_event(
+    function it_creates_built_in_events(
         OutputInterface $output,
         Interpreter $interpreter,
         FilesystemInterface $filesystem
     ) {
-        $this->createActivationObject($output, $interpreter, $filesystem)
-             ->get('main')->shouldHaveType('Glitch\Runtime\EventValue');
+        $activationObject = $this->createActivationObject($output, $interpreter, $filesystem);
+
+        $activationObject->get('main')->shouldHaveType('Glitch\Runtime\EventValue');
     }
     
-    function it_creates_a_println_action(
+    function it_creates_built_in_actions(
         OutputInterface $output,
         Interpreter $interpreter,
         FilesystemInterface $filesystem
     ) {
-        $this->createActivationObject($output, $interpreter, $filesystem)
-             ->get('println')->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $activationObject = $this->createActivationObject($output, $interpreter, $filesystem);
+
+        $activationObject->get('println')->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $activationObject->get('include')->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $activationObject->get('file_get_contents')->shouldHaveType('Glitch\Runtime\ActionInterface');
     }
     
-    function it_creates_an_include_action(
+    function it_creates_built_in_functions(
         OutputInterface $output,
         Interpreter $interpreter,
         FilesystemInterface $filesystem
     ) {
-        $this->createActivationObject($output, $interpreter, $filesystem)
-             ->get('include')->shouldHaveType('Glitch\Runtime\ActionInterface');
-    }
-    
-    function it_creates_a_file_get_contents_action(
-        OutputInterface $output,
-        Interpreter $interpreter,
-        FilesystemInterface $filesystem
-    ) {
-        $this->createActivationObject($output, $interpreter, $filesystem)
-             ->get('file_get_contents')->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $activationObject = $this->createActivationObject($output, $interpreter, $filesystem);
+
+        $activationObject->get('strpos')->shouldHaveType('Glitch\Runtime\FunctionInterface');
     }
 }
