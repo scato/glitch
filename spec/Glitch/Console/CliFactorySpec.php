@@ -49,5 +49,8 @@ class CliFactorySpec extends ObjectBehavior
         $activationObject = $this->createActivationObject($output, $interpreter, $filesystem);
 
         $activationObject->get('strpos')->shouldHaveType('Glitch\Runtime\FunctionInterface');
+        $activationObject->get('substr')->shouldHaveType('Glitch\Runtime\FunctionInterface');
+        $activationObject->get('strlen')->shouldHaveType('Glitch\Runtime\FunctionInterface');
+        $activationObject->get('trim')->shouldHaveType('Glitch\Runtime\FunctionInterface');
     }
 }

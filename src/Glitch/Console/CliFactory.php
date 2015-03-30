@@ -9,31 +9,6 @@ use League\Flysystem\FilesystemInterface;
 
 class CliFactory
 {
-    private function createMainEvent()
-    {
-        return new EventValue();
-    }
-
-    private function createPrintlnAction(OutputInterface $output)
-    {
-        return new CallbackAction(array($output, 'writeln'));
-    }
-
-    private function createIncludeAction(Interpreter $interpreter)
-    {
-        return new CallbackAction(array($interpreter, 'includeFile'));
-    }
-
-    private function createFileGetContentsAction(FilesystemInterface $filesystem)
-    {
-        return new CallbackAction(array($filesystem, 'read'));
-    }
-
-    private function createStrposFunction()
-    {
-        return new CallbackFunction('strpos');
-    }
-
     public function createActivationObject(
         OutputInterface $output,
         Interpreter $interpreter,
@@ -41,11 +16,16 @@ class CliFactory
     ) {
         $activationObject = new ActivationObject();
 
-        $activationObject->set('main', $this->createMainEvent());
-        $activationObject->set('println', $this->createPrintlnAction($output));
-        $activationObject->set('include', $this->createIncludeAction($interpreter));
-        $activationObject->set('file_get_contents', $this->createFileGetContentsAction($filesystem));
-        $activationObject->set('strpos', $this->createStrposFunction());
+        $activationObject->set('main', new EventValue());
+
+        $activationObject->set('println', new CallbackAction(array($output, 'writeln')));
+        $activationObject->set('include', new CallbackAction(array($interpreter, 'includeFile')));
+        $activationObject->set('file_get_contents', new CallbackAction(array($filesystem, 'read')));
+
+        $activationObject->set('strpos', new CallbackFunction('strpos'));
+        $activationObject->set('substr', new CallbackFunction('substr'));
+        $activationObject->set('strlen', new CallbackFunction('strlen'));
+        $activationObject->set('trim', new CallbackFunction('trim'));
 
         return $activationObject;
     }
