@@ -34,6 +34,10 @@ class BinaryNode implements ExpressionNode
                 return strnatcmp($left->toString(), $right->toString()) < 0;
             case '>':
                 return strnatcmp($left->toString(), $right->toString()) > 0;
+            case '<=':
+                return strnatcmp($left->toString(), $right->toString()) <= 0;
+            case '>=':
+                return strnatcmp($left->toString(), $right->toString()) >= 0;
             default:
                 throw new RuntimeException("Operator '{$this->operator}' not supported");
         }

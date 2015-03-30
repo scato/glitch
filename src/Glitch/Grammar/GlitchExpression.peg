@@ -24,7 +24,7 @@ grammar GlitchExpression
                              { $left = new BinaryNode($operator, $left, $right); }
                          )* { return $left; };
     
-    RELATIONAL_OPERATOR = "<" / ">";
+    RELATIONAL_OPERATOR = "<=" / ">=" / "<" / ">";
     RelationalExpression = left:AdditiveExpression (
                                _ operator:RELATIONAL_OPERATOR _ right:AdditiveExpression
                                { $left = new BinaryNode($operator, $left, $right); }

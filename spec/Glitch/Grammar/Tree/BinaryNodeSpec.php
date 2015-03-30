@@ -115,4 +115,22 @@ class BinaryNodeSpec extends ObjectBehavior
 
         $this->reduce($scope)->shouldBeLike(new StringValue('false'));
     }
+
+    function it_should_see_that_two_strings_are_the_same(ExpressionNode $left, ExpressionNode $right, ActivationObject $scope)
+    {
+        $this->beConstructedWith('<=', $left, $right);
+        $left->reduce($scope)->willReturn(new StringValue('foo'));
+        $right->reduce($scope)->willReturn(new StringValue('foo'));
+
+        $this->reduce($scope)->shouldBeLike(new StringValue('true'));
+    }
+
+    function it_should_see_that_two_strings_are_the_same_again(ExpressionNode $left, ExpressionNode $right, ActivationObject $scope)
+    {
+        $this->beConstructedWith('>=', $left, $right);
+        $left->reduce($scope)->willReturn(new StringValue('foo'));
+        $right->reduce($scope)->willReturn(new StringValue('foo'));
+
+        $this->reduce($scope)->shouldBeLike(new StringValue('true'));
+    }
 }

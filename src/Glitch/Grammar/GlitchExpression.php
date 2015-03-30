@@ -378,14 +378,42 @@ class GlitchExpression
         $_cut14 = $this->cut;
 
         $this->cut = false;
-        if (substr($this->string, $this->position, strlen("<")) === "<") {
+        if (substr($this->string, $this->position, strlen("<=")) === "<=") {
             $_success = true;
-            $this->value = substr($this->string, $this->position, strlen("<"));
-            $this->position += strlen("<");
+            $this->value = substr($this->string, $this->position, strlen("<="));
+            $this->position += strlen("<=");
         } else {
             $_success = false;
 
-            $this->report($this->position, '"<"');
+            $this->report($this->position, '"<="');
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position13;
+
+            if (substr($this->string, $this->position, strlen(">=")) === ">=") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen(">="));
+                $this->position += strlen(">=");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '">="');
+            }
+        }
+
+        if (!$_success && !$this->cut) {
+            $this->position = $_position13;
+
+            if (substr($this->string, $this->position, strlen("<")) === "<") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("<"));
+                $this->position += strlen("<");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"<"');
+            }
         }
 
         if (!$_success && !$this->cut) {
