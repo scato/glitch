@@ -30,35 +30,11 @@ class SystemContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @BeforeScenario
+     * @Given I have a/an :name example
      */
-    public function prepare(BeforeScenarioScope $scope)
+    public function iHaveAnExample($name)
     {
-        $this->filename = tempnam('/tmp/', 'glitch-');
-    }
-
-    /**
-     * @AfterScenario
-     */
-    public function cleanTmp(AfterScenarioScope $scope)
-    {
-        unlink($this->filename);
-    }
-
-    /**
-     * @Given I have a Hello, world! example
-     */
-    public function iHaveAHelloWorldExample()
-    {
-        file_put_contents($this->filename, 'main += args => { println ! "Hello, world!"; };');
-    }
-
-    /**
-     * @Given I have an echo example
-     */
-    public function iHaveAnEchoExample()
-    {
-        file_put_contents($this->filename, 'main += args => { println ! args; };');
+        $this->filename = "features/examples/{$name}.g";
     }
 
     /**
@@ -93,6 +69,14 @@ class SystemContext implements Context, SnippetAcceptingContext
     public function iShouldSee($line)
     {
         assert(var_export($this->process->getOutput(), true) . ' === ' . var_export($line . "\n", true));
+    }
+
+    /**
+     * @Then I should see the following:
+     */
+    public function iShouldSeeTheFollowing(PyStringNode $string)
+    {
+        assert(var_export($this->process->getOutput(), true) . ' === ' . var_export($string->__toString() . "\n", true));
     }
 }
 

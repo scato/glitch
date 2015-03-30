@@ -37,6 +37,12 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
         $this->filesystem = $this->prophet->prophesize();
         $this->filesystem->willImplement('League\Flysystem\FilesystemInterface');
 
+        foreach (['lib/stdlib.g', 'features/examples/languages.txt'] as $filename) {
+            $this->filesystem->read($filename)->willReturn(
+                file_get_contents($filename)
+            );
+        }
+
         $this->interpreter = new Interpreter(
             $this->filesystem->reveal(),
             new GlitchFile(),
@@ -45,19 +51,13 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given I have a Hello, world! example
+     * @Given I have a/an :name example
      */
-    public function iHaveAHelloWorldExample()
+    public function iHaveAnExample($name)
     {
-        $this->filesystem->read('example.g')->willReturn('main += args => { println ! "Hello, world!"; };');
-    }
-
-    /**
-     * @Given I have an echo example
-     */
-    public function iHaveAnEchoExample()
-    {
-        $this->filesystem->read('example.g')->willReturn('main += args => { println ! args; };');
+        $this->filesystem->read('example.g')->willReturn(
+            file_get_contents("features/examples/{$name}.g")
+        );
     }
 
     /**
@@ -73,7 +73,7 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
      */
     public function iRunItWith($args)
     {
-        $this->interpreter->run('example.g', $args, $this->output->reveal());
+        $this->interpreter->runFile('example.g', $args, $this->output->reveal());
     }
 
     /**
@@ -82,5 +82,15 @@ class AcceptanceContext implements Context, SnippetAcceptingContext
     public function iShouldSee($line)
     {
         $this->output->writeln($line)->shouldHaveBeenCalled();
+    }
+
+    /**
+     * @Then I should see the following:
+     */
+    public function iShouldSeeTheFollowing(PyStringNode $string)
+    {
+        foreach ($string->getStrings() as $line) {
+            $this->output->writeln($line)->shouldHaveBeenCalled();
+        }
     }
 }
