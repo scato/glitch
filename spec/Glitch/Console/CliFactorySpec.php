@@ -39,6 +39,7 @@ class CliFactorySpec extends ObjectBehavior
         $activationObject->get('println')->shouldHaveType('Glitch\Runtime\ActionInterface');
         $activationObject->get('include')->shouldHaveType('Glitch\Runtime\ActionInterface');
         $activationObject->get('file_get_contents')->shouldHaveType('Glitch\Runtime\ActionInterface');
+        $activationObject->get('microtime')->shouldHaveType('Glitch\Runtime\ActionInterface');
     }
     
     function it_creates_built_in_functions(
@@ -52,5 +53,6 @@ class CliFactorySpec extends ObjectBehavior
         $activationObject->get('substr')->shouldHaveType('Glitch\Runtime\FunctionInterface');
         $activationObject->get('strlen')->shouldHaveType('Glitch\Runtime\FunctionInterface');
         $activationObject->get('trim')->shouldHaveType('Glitch\Runtime\FunctionInterface');
+        $activationObject->get('md5')->shouldHaveType('Glitch\Runtime\FunctionInterface');
     }
 }
