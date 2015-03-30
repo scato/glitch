@@ -30,7 +30,7 @@ grammar GlitchExpression
                                { $left = new BinaryNode($operator, $left, $right); }
                            )* { return $left; };
     
-    ADDITIVE_OPERATOR = "+" / "-";
+    ADDITIVE_OPERATOR = "+" / "-" / ".";
     AdditiveExpression = left:MultiplicativeExpression (
                                _ operator:ADDITIVE_OPERATOR _ right:MultiplicativeExpression
                                { $left = new BinaryNode($operator, $left, $right); }

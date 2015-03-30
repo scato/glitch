@@ -35,6 +35,15 @@ class BinaryNodeSpec extends ObjectBehavior
         $this->reduce($scope)->shouldBeLike(new StringValue('-1'));
     }
 
+    function it_should_concatenate_two_strings(ExpressionNode $left, ExpressionNode $right, ActivationObject $scope)
+    {
+        $this->beConstructedWith('.', $left, $right);
+        $left->reduce($scope)->willReturn(new StringValue('foo'));
+        $right->reduce($scope)->willReturn(new StringValue('bar'));
+
+        $this->reduce($scope)->shouldBeLike(new StringValue('foobar'));
+    }
+
     function it_should_see_that_two_strings_are_equal(ExpressionNode $left, ExpressionNode $right, ActivationObject $scope)
     {
         $this->beConstructedWith('===', $left, $right);
