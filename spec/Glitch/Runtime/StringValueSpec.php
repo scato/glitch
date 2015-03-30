@@ -35,4 +35,10 @@ class StringValueSpec extends ObjectBehavior
         $this->beConstructedWith('false');
         $this->toBoolean()->shouldBe(false);
     }
+
+    function it_converts_booleans_to_strings()
+    {
+        $this->beConstructedWith(true);
+        $this->toString()->shouldBe('true');
+    }
 }

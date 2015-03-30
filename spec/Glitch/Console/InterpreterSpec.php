@@ -31,12 +31,30 @@ class InterpreterSpec extends ObjectBehavior
     ) {
         $filesystem->read('example.g')->willReturn('println ! "foo";');
         $grammar->parse('println ! "foo";')->willReturn($programNode);
-        $activationObjectFactory->createActivationObject($output)->willReturn($activationObject);
+        $activationObjectFactory->createActivationObject($output, $this, $filesystem)->willReturn($activationObject);
         $activationObject->get('main')->willReturn($main);
 
-        $this->run('example.g', 'test', $output);
+        $this->runFile('example.g', 'test', $output);
 
         $programNode->run($activationObject)->shouldBeCalled();
         $main->fire([new StringValue("test")])->shouldBeCalled();
+    }
+
+    function it_should_include_a_file(
+        FilesystemInterface $filesystem,
+        GlitchFile $grammar,
+        ProgramNode $programNode,
+        CliFactory $activationObjectFactory,
+        ActivationObject $activationObject,
+        OutputInterface $output
+    ) {
+        $filesystem->read('stdlib.g')->willReturn('println ! "foo";');
+        $grammar->parse('println ! "foo";')->willReturn($programNode);
+        $activationObjectFactory->createActivationObject($output, $this, $filesystem)->willReturn($activationObject);
+
+        $this->init($output, $filesystem);
+        $this->includeFile('stdlib.g');
+
+        $programNode->run($activationObject)->shouldBeCalled();
     }
 }

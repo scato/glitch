@@ -10,7 +10,13 @@ class StringValue implements ValueInterface
 
     public function __construct($value)
     {
-        $this->value = $value;
+        if ($value === true) {
+            $this->value = 'true';
+        } elseif ($value === false) {
+            $this->value = 'false';
+        } else {
+            $this->value = $value;
+        }
     }
 
     public function toString()

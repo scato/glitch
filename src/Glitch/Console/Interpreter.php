@@ -12,6 +12,7 @@ class Interpreter
     private $filesystem;
     private $grammar;
     private $activationObjectFactory;
+    private $global;
 
     public function __construct(
         FilesystemInterface $filesystem,
@@ -23,13 +24,22 @@ class Interpreter
         $this->activationObjectFactory = $activationObjectFactory;
     }
 
-    public function run($filename, $args, OutputInterface $output)
+    public function runFile($filename, $args, OutputInterface $output)
+    {
+        $this->init($output, $this->filesystem);
+        $this->includeFile($filename);
+        $this->global->get('main')->fire([new StringValue($args)]);
+    }
+
+    public function init(OutputInterface $output, FilesystemInterface $filesystem)
+    {
+        $this->global = $this->activationObjectFactory->createActivationObject($output, $this, $filesystem);
+    }
+
+    public function includeFile($filename)
     {
         $contents = $this->filesystem->read($filename);
         $program = $this->grammar->parse($contents);
-        $global = $this->activationObjectFactory->createActivationObject($output);
-
-        $program->run($global);
-        $global->get('main')->fire([new StringValue($args)]);
+        $program->run($this->global);
     }
 }
