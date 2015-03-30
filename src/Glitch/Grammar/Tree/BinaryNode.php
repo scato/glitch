@@ -26,6 +26,8 @@ class BinaryNode implements ExpressionNode
                 return $left->toString() + $right->toString();
             case '-':
                 return $left->toString() - $right->toString();
+            case '.':
+                return $left->toString() . $right->toString();
             case '===':
                 return $left->toString() === $right->toString();
             case '!==':

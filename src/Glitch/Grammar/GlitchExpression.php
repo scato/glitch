@@ -598,6 +598,20 @@ class GlitchExpression
             }
         }
 
+        if (!$_success && !$this->cut) {
+            $this->position = $_position20;
+
+            if (substr($this->string, $this->position, strlen(".")) === ".") {
+                $_success = true;
+                $this->value = substr($this->string, $this->position, strlen("."));
+                $this->position += strlen(".");
+            } else {
+                $_success = false;
+
+                $this->report($this->position, '"."');
+            }
+        }
+
         $this->cut = $_cut21;
 
         $this->cache['ADDITIVE_OPERATOR'][$_position] = array(
