@@ -94,3 +94,11 @@ sort := (in, func, out) => {
 
 id := x -> x;
 
+shuffle := (in, out) => {
+    microtime ! seed => {
+        randomize := string -> md5(seed . string);
+
+        sort ! (in, randomize, out);
+    };
+};
+
