@@ -9,8 +9,6 @@ $options = [
 foreach ($options as $filename) {
     if (file_exists($filename)) {
         require $filename;
-    } else {
-        echo "$filename does not exist\n";
     }
 }
 
