@@ -87,17 +87,17 @@ last := (a, b) => {
     });
 };
 
+sample := (a, b, c) => {
+    eachr ! (a, b, (x, y) => {
+        c ! y;
+    });
+};
+
 pair := (a, b) => {
     a += x => {
         next ! (a, y => {
             b ! (x, y);
         });
     };
-};
-
-sample := (a, b, c) => {
-    eachr ! (a, b, (x, y) => {
-        c ! y;
-    });
 };
 
