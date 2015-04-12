@@ -1,10 +1,11 @@
 include ! "doc/examples/events.g";
+include ! "doc/examples/phases.g";
 
 main += args => {
-    println ! "Should have output: \"2\", \"3\"";
+    println ! "Should have output: \"1\", \"4\"";
 
     * a, b, c, d;
-    during ! (a, b, c, d);
+    between ! (a, b, c, d);
     d += println;
 
     a ! "1";

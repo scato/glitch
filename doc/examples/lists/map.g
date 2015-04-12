@@ -1,10 +1,11 @@
 include ! "doc/examples/events.g";
+include ! "doc/examples/lists.g";
 
 main += args => {
-    println ! "Should have output: \"1\", \"2\"";
+    println ! "Should have output: \"2\", \"3\", \"4\", \"5\"";
 
     * a, b;
-    take ! (a, "2", b);
+    map ! (a, x -> x + "1", b);
     b += println;
 
     a ! "1";

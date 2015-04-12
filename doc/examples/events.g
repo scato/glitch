@@ -3,8 +3,8 @@ delegate := (a, b) => {
 };
 
 merge := (a, b, c) => {
-    a += c;
-    b += c;
+    delegate ! (a, c);
+    delegate ! (b, c);
 };
 
 join := (a, b, c) => {
@@ -87,23 +87,6 @@ last := (a, b) => {
     });
 };
 
-noop := () => {
-};
-
-take := (a, n, b) => {
-    next ! (a, x => {
-        n > "0" ? b : noop ! x;
-        take ! (a, n - "1", b);
-    });
-};
-
-skip := (a, n, b) => {
-    next ! (a, x => {
-        n > "0" ? noop : b ! x;
-        skip ! (a, n - "1", b);
-    });
-};
-
 pair := (a, b) => {
     a += x => {
         next ! (a, y => {
@@ -115,30 +98,6 @@ pair := (a, b) => {
 sample := (a, b, c) => {
     eachr ! (a, b, (x, y) => {
         c ! y;
-    });
-};
-
-during := (a, b, c, d) => {
-    next0 ! (b, () => {
-        a += d;
-
-        next0 ! (c, () => {
-            a -= d;
-
-            during ! (a, b, c, d);
-        });
-    });
-};
-
-between := (a, b, c, d) => {
-    a += d;
-
-    next0 ! (b, () => {
-        a -= d;
-
-        next0 ! (c, () => {
-            between ! (a, b, c, d);
-        });
     });
 };
 
